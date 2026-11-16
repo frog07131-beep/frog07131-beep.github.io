@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <!-- 左上角 logo，點了回首頁 -->
+    <a class="site-logo" href="index.html" aria-label="回首頁">
+      <img src="./img/logo-small.svg" alt="" />
+    </a>
+
+    <!-- 右上角 menu（白色） -->
+    <a class="menu-btn" href="menu.html" aria-label="開啟選單">
+      <img src="./img/button-menu-white.svg" alt="" />
+    </a>
+  </head>
+  <body>
+    <a class="site-logo" href="index.html" aria-label="回首頁">
+      <img src="./img/logo-small.svg" alt="" />
+    </a>
+    <a class="menu-btn" href="menu.html" aria-label="開啟選單">
+      <img src="./img/button-menu-white.svg" alt="" />
+    </a>
+    <!-- 共用的 logo + menu -->
+    <a class="site-logo" href="index.html" aria-label="回首頁">
+      <img src="./img/logo-small.svg" alt="" />
+    </a>
+    <a class="menu-btn" href="menu.html" aria-label="開啟選單">
+      <img src="./img/button-menu-white.svg" alt="" />
+    </a>
+
+    <main class="travel">
+      <h1 class="travel-title">旅行查詢器</h1>
+
+      <div class="travel-row travel-row-from">
+        <span class="travel-label">我想從</span>
+        <select class="travel-select" label="出發地">
+          <option selected>台灣</option>
+          <option>美國</option>
+          <option>日本</option>
+          <option>英國</option>
+        </select>
+        <img class="travel-arrow" src="./img/arrow-up.svg" alt="" />
+      </div>
+
+      <div class="travel-row travel-row-to">
+        <span class="travel-label">前往</span>
+        <select class="travel-select" label="目的地">
+          <option>台灣</option>
+          <option selected>美國</option>
+          <option>日本</option>
+          <option>英國</option>
+        </select>
+        <img class="travel-arrow" src="./img/arrow-up.svg" alt="" />
+      </div>
+      <div class="travel-search">
+        <button class="travel-btn">查 詢</button>
+      </div>
+    </main>
+      <script>
+  const [fromSelect, toSelect] = document.querySelectorAll('.travel-select');
+
+  function syncOptions() {
+    for (const opt of toSelect.options) {
+      opt.hidden = opt.disabled = (opt.value === fromSelect.value);
+    }
+    if (toSelect.value === fromSelect.value) {
+      toSelect.value = [...toSelect.options].find(opt => !opt.disabled).value;
+    }
+  }
+
+  syncOptions();
+  fromSelect.addEventListener('change', syncOptions);
+</script>
+  </body>
+</html>

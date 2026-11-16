@@ -1,0 +1,72 @@
+/* ===================== 首頁 ===================== */
+body {
+  background-color: var(--orange); /* 首頁改成橘色 */
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: calc(1117 / 1728 * 100vw);
+}
+
+.hero-bg {
+  position: absolute;
+  display: block;
+  width: calc(1650 / 1728 * 100vw);
+  left: calc((1728 - 1650) / 2 / 1728 * 100vw);
+  top: calc((1117 - 992) / 2 / 1728 * 100vw);
+}
+
+.hero-title {
+  position: absolute;
+  left: calc(216 / 1728 * 100vw);
+  top: calc(248 / 1728 * 100vw);
+  width: calc(734 / 1728 * 100vw);
+}
+
+.hero-logo {
+  position: absolute;
+  left: calc(1245 / 1728 * 100vw);
+  top: calc(671 / 1728 * 100vw);
+  width: calc(314 / 1728 * 100vw);
+}
+
+/* ===== 卡片裡的選項 ===== */
+.hero-nav {
+  position: absolute;
+  left: calc(214 / 1728 * 100vw);
+  top: calc(761 / 1728 * 100vw);
+  display: flex;
+  gap: calc(60 / 1728 * 100vw);
+}
+
+.hero-nav a {
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 350;
+  font-size: calc(24 / 1728 * 100vw);
+  line-height: normal;
+  letter-spacing: 0.2em;
+  color: var(--orange);
+  text-align: center;
+  text-decoration: none;
+  padding: calc(9 / 1728 * 100vw) 0;
+  border-top: 1px solid var(--white);
+  border-bottom: 1px solid var(--white);
+}
+
+.hero-nav a:nth-child(1) {
+  width: calc(135 / 1728 * 100vw);
+}
+.hero-nav a:nth-child(2) {
+  width: calc(159 / 1728 * 100vw);
+}
+.hero-nav a:nth-child(3) {
+  width: calc(159 / 1728 * 100vw);
+}
+.hero-nav a:nth-child(4) {
+  width: calc(134 / 1728 * 100vw);
+}
+
+.hero-nav a:hover {
+  color: var(--white);
+}

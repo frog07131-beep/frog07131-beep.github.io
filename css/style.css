@@ -1,0 +1,236 @@
+/* ===================== 顏色變數 ===================== */
+:root {
+  --orange: #e5550d;
+  --white: #ffffff;
+  --black: #000000;
+}
+
+/* ===================== 全站背景顏色 ===================== */
+body {
+  margin: 0;
+  background-color: var(--black);
+}
+
+/* ===================== 共用：右上角 menu ===================== */
+.menu-btn {
+  position: absolute;
+  left: calc(1548 / 1728 * 100vw);
+  top: calc(41 / 1728 * 100vw);
+  width: calc(100 / 1728 * 100vw);
+  display: block;
+  transition: transform 0.2s ease;
+  z-index: 10;
+}
+
+.menu-btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.menu-btn:hover {
+  transform: scale(1.1);
+}
+
+/* ===================== 共用：左上角 logo ===================== */
+.site-logo {
+  position: absolute;
+  left: calc(80 / 1728 * 100vw);
+  top: calc(39 / 1728 * 100vw);
+  width: calc(68 / 1728 * 100vw);
+  display: block;
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+
+.site-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* 滑鼠移上去，logo 放大一點 */
+.site-logo:hover {
+  transform: scale(1.1);
+}
+/* ===================== menu 頁 ===================== */
+.menu {
+  position: relative;
+  width: 100%;
+  height: calc(1117 / 1728 * 100vw);
+}
+
+.menu-side {
+  position: fixed;
+  left: calc(214 / 1728 * 100vw);
+  top: 0;
+  bottom: 0;
+  width: calc(621 / 1728 * 100vw);
+  background-color: var(--orange);
+}
+
+.menu-title {
+  position: absolute;
+  left: calc(83 / 1728 * 100vw);
+  top: calc(130 / 1728 * 100vw);
+  width: calc(200 / 1728 * 100vw);
+}
+
+.menu-list {
+  position: absolute;
+  left: calc(1023 / 1728 * 100vw);
+  top: calc(223 / 1728 * 100vw);
+  display: flex;
+  flex-direction: column;
+  gap: calc(89 / 1728 * 100vw);
+}
+
+.menu-list a {
+  width: calc(495 / 1728 * 100vw);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(17 / 1728 * 100vw) 0;
+  border-top: 1px solid var(--white);
+  border-bottom: 1px solid var(--white);
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 500;
+  font-size: calc(48 / 1728 * 100vw);
+  line-height: normal;
+  letter-spacing: 0.2em;
+  color: var(--orange);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.menu-list a span,
+.menu-list a img {
+  transition: transform 0.2s ease;
+}
+
+.menu-list a img {
+  width: calc(50 / 1728 * 100vw);
+  margin-right: calc(20 / 1728 * 100vw);
+}
+
+.menu-list a:hover {
+  color: var(--white);
+}
+
+.menu-list a:hover span,
+.menu-list a:hover img {
+  transform: translateX(calc(10 / 1728 * 100vw));
+}
+
+/* ===================== 查詢器頁 ===================== */
+.travel {
+  position: relative;
+  width: 100%;
+  height: calc(1117 / 1728 * 100vw);
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+/* ===== 標題 ===== */
+.travel-title {
+  position: absolute;
+  left: calc(558 / 1728 * 100vw);
+  top: calc(138 / 1728 * 100vw);
+  width: calc(534 / 1728 * 100vw);
+  margin: 0; /* 拿掉 h1 預設的上下空白 */
+  font-weight: 500;
+  font-size: calc(64 / 1728 * 100vw);
+  line-height: normal;
+  letter-spacing: 0.6em; /* 60% */
+  text-align: center;
+  color: var(--orange);
+}
+
+/* ===== 兩列（我想從／前往） ===== */
+.travel-row {
+  position: absolute;
+  left: calc(214 / 1728 * 100vw);
+  width: calc(1300 / 1728 * 100vw);
+  height: calc(146 / 1728 * 100vw);
+  box-sizing: border-box; /* 框線算在高度裡面 */
+  border-top: calc(10 / 1728 * 100vw) solid var(--orange);
+  border-bottom: calc(10 / 1728 * 100vw) solid var(--orange);
+}
+
+.travel-row-from {
+  top: calc(305 / 1728 * 100vw);
+}
+.travel-row-to {
+  top: calc(576 / 1728 * 100vw);
+}
+
+/* 「我想從」「前往」：靠右對齊 */
+.travel-label {
+  position: absolute;
+  right: calc(940 / 1728 * 100vw); /* 右邊停在 X 574 */
+  top: calc(16 / 1728 * 100vw);
+  font-weight: 400; /* Regular */
+  font-size: calc(64 / 1728 * 100vw);
+  line-height: normal;
+  letter-spacing: 0.2em;
+  color: var(--orange);
+}
+
+/* 下拉選單（台灣／美國） */
+.travel-select {
+  position: absolute;
+  left: calc(807 / 1728 * 100vw);
+  top: calc(17 / 1728 * 100vw);
+  width: calc(358 / 1728 * 100vw); /* 從文字開頭延伸到箭頭右邊 */
+  appearance: none; /* 拿掉瀏覽器預設的下拉樣式 */
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 400;
+  font-size: calc(64 / 1728 * 100vw);
+  line-height: normal;
+  letter-spacing: 0.2em;
+  color: var(--white);
+  cursor: pointer;
+}
+
+/* 展開後的選項清單 */
+.travel-select option {
+  color: var(--black);
+}
+
+/* ↗ 箭頭 */
+.travel-arrow {
+  position: absolute;
+  left: calc(1113 / 1728 * 100vw); /* 估 */
+  top: calc(33 / 1728 * 100vw); /* 估 */
+  width: calc(52 / 1728 * 100vw); /* 估 */
+  pointer-events: none;
+}
+
+/* ===== 查詢按鈕那一列 ===== */
+.travel-search {
+  position: absolute;
+  left: calc(214 / 1728 * 100vw);
+  top: calc(852 / 1728 * 100vw);
+  width: calc(1300 / 1728 * 100vw);
+  height: calc(135 / 1728 * 100vw);
+  box-sizing: border-box;
+  border-top: calc(4 / 1728 * 100vw) solid var(--orange); /* 估：線的粗細 */
+  border-bottom: calc(4 / 1728 * 100vw) solid var(--orange);
+}
+
+.travel-btn {
+  position: absolute;
+  left: calc(409 / 1728 * 100vw); /* 623 - 214 */
+  top: 0;
+  width: calc(487 / 1728 * 100vw);
+  height: 100%;
+  border: none;
+  background-color: var(--orange);
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 500;
+  font-size: calc(64 / 1728 * 100vw);
+  letter-spacing: 0.6em;
+  color: var(--black);
+  cursor: pointer;
+}

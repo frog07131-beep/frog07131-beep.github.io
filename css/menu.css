@@ -1,0 +1,72 @@
+/* ===== 整頁 ===== */
+body {
+  background-color: #000000;
+  margin: 0;
+}
+
+.menu {
+  position: relative;
+  width: 100%;
+  height: calc(1117 / 1728 * 100vw);
+}
+
+/* ===== 左邊橘色區塊 ===== */
+.menu-side {
+  position: fixed; /* 固定在視窗上 */
+  left: calc(214 / 1728 * 100vw);
+  top: 0; /* 貼齊視窗最上面 */
+  bottom: 0; /* 貼齊視窗最下面 */
+  width: calc(621 / 1728 * 100vw);
+  background-color: #e5550d;
+}
+
+.menu-title {
+  position: absolute;
+  left: calc(83 / 1728 * 100vw); /* 橘色區塊內的左 padding */
+  top: calc(130 / 1728 * 100vw); /* 橘色區塊內的上 padding */
+  width: calc(200 / 1728 * 100vw);
+}
+
+/* ===== 右邊選項：整排 ===== */
+.menu-list {
+  position: absolute;
+  left: calc(1023 / 1728 * 100vw);
+  top: calc(223 / 1728 * 100vw); /* 估：第一個選項的 Y */
+  display: flex;
+  flex-direction: column; /* 由上往下排 */
+  gap: calc(89 / 1728 * 100vw); /* 估：選項之間的距離 */
+}
+
+/* ===== 每一個選項 ===== */
+.menu-list a {
+  width: calc(495 / 1728 * 100vw);
+  display: flex;
+  justify-content: space-between; /* 文字靠左、箭頭靠右 */
+  align-items: center; /* 上下置中 */
+  padding: calc(17 / 1728 * 100vw) 0;
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 500; /* Medium */
+  font-size: calc(48 / 1728 * 100vw);
+  line-height: normal;
+  letter-spacing: 0.2em;
+  color: #e5550d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+/* ===== 箭頭 ===== */
+.menu-list a img {
+  width: calc(50 / 1728 * 100vw); /* 估：換成箭頭的 W */
+  margin-right: calc(20 / 1728 * 100vw); /* 估：箭頭離右邊的距離 */
+  transition: transform 0.7s ease;
+}
+
+/* 滑鼠移上去，箭頭往右滑一點 */
+.menu-list a:hover img {
+  transform: translateX(calc(10 / 1728 * 100vw));
+}
+.menu-list a:hover {
+  color: #ffffff;
+}
