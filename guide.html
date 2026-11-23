@@ -13,7 +13,7 @@
 
   <!-- ==================== 頂部導覽列 (與 travel / search 一致) ==================== -->
   <header class="top-nav">
-    <a href="./guide.html" class="nav-logo" id="nav-logo" aria-label="返回插座世界地圖">
+    <a href="./index.html" class="nav-logo" id="nav-logo" aria-label="返回 PLUG IN 首頁">
       <img src="./img/button-logo.svg" alt="PLUG IN Logo">
     </a>
 
@@ -30,10 +30,36 @@
     <nav class="menu-drawer-panel" aria-label="網站選單">
       <button type="button" class="menu-close-btn" id="menu-close-btn" aria-label="關閉選單">✕</button>
       <ul class="menu-nav-list">
-        <li><a href="./guide.html?view=map" data-nav-view="map">1-1 插座世界地圖</a></li>
-        <li><a href="./guide.html?view=gallery&spec=all&page=1" data-nav-view="gallery">1-2 插頭圖鑑（A–O）</a></li>
-        <li><a href="./travel.html">2-1 旅行查詢器</a></li>
-        <li><a href="./search.html?from=TW&to=CN">2-2 查詢結果範例</a></li>
+        <li>
+          <a href="./guide.html?view=map" data-nav-view="map">
+            <span>插頭世界地圖</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./guide.html?view=gallery&spec=all&page=1" data-nav-view="gallery">
+            <span>插頭圖鑑</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./travel.html">
+            <span>旅行查詢器</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="#" class="is-coming-soon" aria-disabled="true" title="尚未製作，敬請期待" onclick="return false;">
+            <span>資訊與文章</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./quiz.html">
+            <span>用電安全隨堂考</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
       </ul>
     </nav>
   </aside>

@@ -213,7 +213,10 @@ body[data-stage="question"] .bar-orange {
 }
 
 .menu-nav-list a {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   padding: 14px 0;
   color: var(--pure-white);
   text-decoration: none;
@@ -226,6 +229,33 @@ body[data-stage="question"] .bar-orange {
 .menu-nav-list a:hover {
   color: var(--brand-orange);
   padding-left: 8px;
+}
+
+.menu-nav-arrow {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.18s ease;
+}
+
+.menu-nav-list a:hover .menu-nav-arrow {
+  transform: translateX(4px);
+}
+
+.menu-nav-list a.is-coming-soon {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.menu-nav-list a.is-coming-soon:hover {
+  color: var(--pure-white);
+  padding-left: 0;
+}
+
+.menu-nav-list a.is-coming-soon:hover .menu-nav-arrow {
+  transform: none;
 }
 
 /* =========================================

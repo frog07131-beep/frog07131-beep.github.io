@@ -1,0 +1,356 @@
+/* =========================================
+1. 浮動比例變數 (完全對齊 Figma 0-0 與全站 1728×1117 基準)
+   ========================================= */
+:root {
+  --bg-black: #000000;
+  --brand-orange: #E5550D;
+  --pure-white: #FFFFFF;
+  --card-gray: #D9D9D9;
+  --text-muted: #464444;
+
+  --line-weight: 0.174vw;        /* 3 / 1728 */
+  --nav-pad-x: 4.63vw;           /* 80 / 1728 */
+  --logo-size: 4.05vw;           /* 70 / 1728 */
+
+  --font-32: 1.85vw;             /* 32 / 1728 */
+  --font-24: 1.39vw;             /* 24 / 1728 */
+  --font-20: 1.16vw;             /* 20 / 1728 */
+}
+
+/* =========================================
+2. 全域重置與畫布
+   ========================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--brand-orange);
+  color: var(--brand-orange);
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* =========================================
+3. 頂部導覽列 (0-0 橘底：隱藏左上 Logo，右上選單兩黑一白)
+   ========================================= */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 var(--nav-pad-x);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.nav-logo {
+  visibility: hidden;
+  pointer-events: none;
+  display: block;
+  margin-top: 3.58vh;
+  width: var(--logo-size);
+  height: var(--logo-size);
+}
+
+.nav-menu-btn {
+  pointer-events: auto;
+  margin-top: 3.67vh; /* 41 / 1117 */
+  width: 5.79vw;      /* 100 / 1728 */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.34vh;        /* 15 / 1117 */
+  padding: 0;
+}
+
+.menu-bar {
+  display: block;
+  height: 1.07vh;     /* 12 / 1117 */
+  border-radius: 0.174vw;
+  transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.bar-orange {
+  width: 100%;
+  background-color: var(--bg-black);
+}
+
+.bar-white {
+  width: 50%;
+  background-color: var(--pure-white);
+}
+
+.nav-menu-btn:hover .bar-white {
+  width: 75%;
+}
+
+/* =========================================
+4. 側邊選單抽屜 (沿用全站原本設定 + 右側橘色箭頭)
+   ========================================= */
+.menu-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.menu-drawer.open {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.menu-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.72);
+}
+
+.menu-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(420px, 85vw);
+  height: 100%;
+  background-color: var(--bg-black);
+  border-left: 3px solid var(--brand-orange);
+  padding: 48px 36px;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+}
+
+.menu-drawer.open .menu-drawer-panel {
+  transform: translateX(0);
+}
+
+.menu-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  color: var(--brand-orange);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.menu-nav-list {
+  list-style: none;
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menu-nav-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  color: var(--pure-white);
+  text-decoration: none;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid var(--brand-orange);
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.menu-nav-list a:hover {
+  color: var(--brand-orange);
+  padding-left: 8px;
+}
+
+.menu-nav-arrow {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.18s ease;
+}
+
+.menu-nav-list a:hover .menu-nav-arrow {
+  transform: translateX(4px);
+}
+
+.menu-nav-list a.is-coming-soon {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.menu-nav-list a.is-coming-soon:hover {
+  color: var(--pure-white);
+  padding-left: 0;
+}
+
+.menu-nav-list a.is-coming-soon:hover .menu-nav-arrow {
+  transform: none;
+}
+
+/* =========================================
+5. 0-0 首頁主視覺 (依 Figma 0-0 精準定位)
+   ========================================= */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--brand-orange);
+  overflow: hidden;
+}
+
+/* 滿版橘底 + 黑色流線面板底圖 */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* 左上角 PLUG IN 幾何字標 (x=12.50%, y=22.59%, h=9.64%) */
+.hero-title {
+  position: absolute;
+  left: 12.50vw;
+  top: 22.59vh;
+  height: min(9.64vh, 6.25vw);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.hero-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.85vw;
+  height: 100%;
+}
+
+.hero-word img {
+  height: 100%;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  filter: url(#home-orange-tint);
+}
+
+.hero-word-gap {
+  display: inline-block;
+  width: 3.9vw;
+}
+
+/* 副標題：關於插頭的大小事 (x=12.89%, y=36.60%) */
+.hero-subtitle {
+  position: absolute;
+  left: 12.89vw;
+  top: 36.60vh;
+  z-index: 2;
+  font-size: var(--font-32);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.45em;
+  color: var(--brand-orange);
+  white-space: nowrap;
+}
+
+/* 黑色面板內四項水平功能導覽 (x=12.50%, y=67.8%, w=42.5%) */
+.hero-nav {
+  position: absolute;
+  left: 12.50vw;
+  top: 67.5vh;
+  width: 43.2vw;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55vh 0.35vw;
+  font-size: var(--font-24);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  padding-left: calc(0.35vw + 0.16em);
+  color: var(--brand-orange);
+  text-decoration: none;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.hero-nav-link:hover,
+.hero-nav-link:focus-visible {
+  border-top-color: var(--brand-orange);
+  border-bottom-color: var(--brand-orange);
+  outline: none;
+}
+
+.hero-nav-link.is-coming-soon {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.hero-nav-link.is-coming-soon:hover {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+
+/* 右下角大四圓品牌標誌 (x=74.61%, y=64.76%, size=13.0vw / 19.73vh) */
+.hero-logo {
+  position: absolute;
+  left: 74.61vw;
+  top: 64.76vh;
+  width: min(13.0vw, 19.73vh);
+  height: min(13.0vw, 19.73vh);
+  display: block;
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 左下角橘底上的兩顆黑色圓點 (x1=13.38%, x2=25.39%, y=82.08%) */
+.hero-bottom-dots {
+  position: absolute;
+  left: 13.38vw;
+  top: 82.08vh;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 5.2vw;
+  pointer-events: none;
+}
+
+.hero-dot {
+  display: block;
+  width: min(6.8vw, 10.4vh);
+  height: min(6.8vw, 10.4vh);
+  border-radius: 50%;
+  background-color: var(--bg-black);
+}

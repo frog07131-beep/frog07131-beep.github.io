@@ -663,11 +663,6 @@ document.addEventListener('DOMContentLoaded', () => {
   menuBackdrop.addEventListener('click', () => setDrawerOpen(false));
   menuCloseBtn.addEventListener('click', () => setDrawerOpen(false));
 
-  navLogo.addEventListener('click', (e) => {
-    e.preventDefault();
-    switchView('map');
-  });
-
   document.querySelectorAll('[data-nav-view]').forEach((link) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
