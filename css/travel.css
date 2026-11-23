@@ -166,7 +166,7 @@ body {
   border-left: none;
   display: flex;
   align-items: center;
-  padding-left: var(--space-90-w);
+  padding-left: 10.42vw; /* 180 / 1728 (原 90w + 兩次右移共 90w) */
   padding-top: var(--space-45-h);
   padding-bottom: var(--space-45-h);
 }
