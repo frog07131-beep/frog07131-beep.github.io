@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLUG IN - 查詢結果</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style5.css">
+</head>
+<body>
+
+  <!-- ==================== 頂部導覽列 ==================== -->
+  <header class="top-nav">
+    <a href="./index.html" class="nav-logo" aria-label="返回首頁">
+      <img src="./img/button-logo.svg" alt="PLUG IN Logo">
+    </a>
+
+    <button type="button" id="menu-btn" class="nav-menu-btn" aria-label="開啟選單" aria-expanded="false">
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-white"></span>
+    </button>
+  </header>
+
+  <!-- ==================== 側邊選單遮罩 ==================== -->
+  <aside class="menu-drawer" id="menu-drawer" aria-hidden="true">
+    <div class="menu-drawer-backdrop" id="menu-backdrop"></div>
+    <nav class="menu-drawer-panel" aria-label="網站選單">
+      <button type="button" class="menu-close-btn" id="menu-close-btn" aria-label="關閉選單">✕</button>
+      <ul class="menu-nav-list">
+        <li>
+          <a href="./guide.html?view=map">
+            <span>插頭世界地圖</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./guide.html?view=gallery&spec=all&page=1">
+            <span>插頭圖鑑</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./travel.html">
+            <span>旅行查詢器</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="#" class="is-coming-soon" aria-disabled="true" title="尚未製作，敬請期待" onclick="return false;">
+            <span>資訊與文章</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./quiz.html">
+            <span>用電安全隨堂考</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ==================== 主體內容 ==================== -->
+  <main class="page-main">
+
+    <!-- 查詢區塊：總高 271h (頂部距 175h，上下橘色邊線) -->
+    <section class="search-section" aria-label="旅行查詢器">
+      <div class="search-title-row">
+        <h1 class="search-section-title">旅行查詢器</h1>
+      </div>
+
+      <div class="search-bar-row">
+        <div class="search-action-area">
+
+          <!-- 出發地選單框 -->
+          <div class="input-pill" id="origin-pill">
+            <div class="pill-trigger" id="origin-trigger" role="button" tabindex="0" aria-label="選擇出發地">
+              <span class="pill-country" id="origin-text">臺灣</span>
+              <span class="pill-sublabel">出發地</span>
+            </div>
+
+            <div class="dropdown-panel" id="origin-dropdown">
+              <div class="dropdown-cap">你想從哪裡出發</div>
+              <ul class="option-list" id="origin-list">
+                <li class="option-item" data-value="TW" data-label="臺灣">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>台灣 (TW)</span>
+                </li>
+                <li class="option-item" data-value="JP" data-label="日本">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>日本 (JP)</span>
+                </li>
+                <li class="option-item" data-value="US" data-label="美國">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>美國 (US)</span>
+                </li>
+                <li class="option-item" data-value="CN" data-label="中國">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>中國 (CN)</span>
+                </li>
+                <li class="option-item" data-value="UK" data-label="英國">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>英國 (UK)</span>
+                </li>
+              </ul>
+              <div class="dropdown-cap dropdown-cap-bottom"></div>
+            </div>
+          </div>
+
+          <!-- 中間交換按鈕 -->
+          <button type="button" id="btn-swap" class="btn-swap" aria-label="交換出發地與目的地">
+            <img src="./img/button-compare-arrows.svg" alt="交換出發地與目的地">
+          </button>
+
+          <!-- 目的地選單框 -->
+          <div class="input-pill" id="dest-pill">
+            <div class="pill-trigger" id="dest-trigger" role="button" tabindex="0" aria-label="選擇目的地">
+              <span class="pill-country" id="dest-text">中國</span>
+              <span class="pill-sublabel">目的地</span>
+            </div>
+
+            <div class="dropdown-panel" id="dest-dropdown">
+              <div class="dropdown-cap">你想去哪裡</div>
+              <ul class="option-list" id="dest-list">
+                <li class="option-item" data-value="TW" data-label="臺灣">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>台灣 (TW)</span>
+                </li>
+                <li class="option-item" data-value="JP" data-label="日本">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>日本 (JP)</span>
+                </li>
+                <li class="option-item" data-value="US" data-label="美國">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>美國 (US)</span>
+                </li>
+                <li class="option-item" data-value="CN" data-label="中國">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>中國 (CN)</span>
+                </li>
+                <li class="option-item" data-value="UK" data-label="英國">
+                  <img src="./img/location.svg" alt="" class="option-icon">
+                  <span>英國 (UK)</span>
+                </li>
+              </ul>
+              <div class="dropdown-cap dropdown-cap-bottom"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 查詢按鈕 -->
+        <button type="button" id="search-btn" class="btn-submit">查詢</button>
+      </div>
+    </section>
+
+    <!-- 查詢結果卡片列表（由 JS 動態渲染） -->
+    <section class="results-section" id="results-container" aria-live="polite" aria-label="查詢結果列表">
+      <!-- 動態產生 search-card-true / search-card-faile -->
+    </section>
+
+  </main>
+
+  <!-- ==================== 了解更多詳細彈窗 ==================== -->
+  <div class="detail-modal" id="detail-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="detail-modal-backdrop" id="modal-backdrop"></div>
+    <div class="detail-modal-box">
+      <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="關閉詳細資訊">✕</button>
+      <div class="modal-header">
+        <span class="modal-badge" id="modal-badge">需要轉接頭</span>
+        <h2 class="modal-title" id="modal-title">臺灣 → 中國（三孔）</h2>
+      </div>
+      <div class="modal-specs" id="modal-specs"></div>
+      <div class="modal-tips">
+        <h3>用電指引與注意事項</h3>
+        <ul id="modal-tips-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/search.js"></script>
+</body>
+</html>
