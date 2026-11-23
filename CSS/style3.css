@@ -1,0 +1,1058 @@
+/* =========================================
+1. 浮動比例變數 (鎖定 Figma 1728 × 1117 等比基準，避免寬螢幕橫向拉寬)
+   ========================================= */
+:root {
+  /* 色彩規範 */
+  --bg-black: #000000;
+  --brand-orange: #E5550D;
+  --card-gray: #D9D9D9;
+  --pure-white: #FFFFFF;
+  --text-muted: #464444;
+
+  /* 1728×1117 等比基準單位 (1728 / 1117 ≈ 1.547) */
+  --stage-w: min(100vw, 154.7vh);
+
+  /* 框線粗度 (3 / 1728) */
+  --line-weight: calc(var(--stage-w) * 0.00174);
+
+  /* 導覽列比例 */
+  --nav-pad-x: 4.63vw;          /* 80 / 1728 */
+  --logo-size: 4.05vw;          /* 70 / 1728 */
+
+  /* 1-1 地圖比例 */
+  --map-top: 11.64vh;           /* 130 / 1117 */
+  --map-controls-top: 84.33vh;  /* 942 / 1117 */
+  --arrow-btn-size: min(5.21vw, 8.06vh); /* 90×90 */
+
+  /* 1-2 圖鑑比例 (完全鎖定 1030×94 與 224×270 原始長寬比) */
+  --tab-bar-w: calc(var(--stage-w) * 0.5961);  /* 1030 / 1728 */
+  --tab-bar-h: calc(var(--stage-w) * 0.0544);  /* 94 / 1728 */
+  --card-grid-w: calc(var(--stage-w) * 0.7523);/* 1300 / 1728 */
+  --card-w: calc(var(--stage-w) * 0.1296);     /* 224 / 1728 */
+  --card-h: calc(var(--stage-w) * 0.15625);    /* 270 / 1728 */
+  --card-radius: calc(var(--stage-w) * 0.0203);/* 35 / 1728 */
+
+  /* 1-3 詳細介紹比例 */
+  --detail-hero-h: 52.01vh;     /* 581 / 1117 */
+  --detail-circle-size: min(23.50vw, 36.35vh); /* 406×406 */
+
+  /* 字級比例 */
+  --font-64: calc(var(--stage-w) * 0.0370);    /* 64 / 1728 */
+  --font-40: calc(var(--stage-w) * 0.0231);    /* 40 / 1728 */
+  --font-32: calc(var(--stage-w) * 0.0185);    /* 32 / 1728 */
+  --font-20: calc(var(--stage-w) * 0.0116);    /* 20 / 1728 */
+  --font-16: max(14px, calc(var(--stage-w) * 0.0093));
+}
+/* =========================================
+2. 全域重置與畫布
+   ========================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+  font-family: 'Noto Sans TC', sans-serif;
+  overflow-x: hidden;
+}
+
+.view-section {
+  display: none;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.view-section.is-active {
+  display: block;
+}
+
+/* =========================================
+3. 頂部導覽列 (Logo + Menu，固定浮於畫面上方)
+   ========================================= */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 var(--nav-pad-x);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.nav-logo,
+.nav-menu-btn {
+  pointer-events: auto;
+}
+
+.nav-logo {
+  display: block;
+  margin-top: 3.58vh; /* 40 / 1117 */
+  width: var(--logo-size);
+  height: var(--logo-size);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  transform: scale(1.06);
+  opacity: 0.9;
+}
+
+.nav-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  transition: filter 0.2s ease;
+}
+
+/* 進入 1-3 橘底 Hero 時，Logo 與 Menu 前兩條改為黑色以維持高對比 */
+body[data-view="detail"] .nav-logo img {
+  filter: brightness(0);
+}
+
+.nav-menu-btn {
+  margin-top: 3.67vh; /* 41 / 1117 */
+  width: 5.79vw;      /* 100 / 1728 */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.34vh;        /* 15 / 1117 */
+  padding: 0;
+}
+
+.menu-bar {
+  display: block;
+  height: 1.07vh;     /* 12 / 1117 */
+  border-radius: 0.174vw;
+  transition: transform 0.2s ease, width 0.2s ease, background-color 0.2s ease;
+}
+
+.bar-primary {
+  width: 100%;
+  background-color: var(--brand-orange);
+}
+
+body[data-view="detail"] .bar-primary {
+  background-color: var(--bg-black);
+}
+
+.bar-white {
+  width: 50%;
+  background-color: var(--pure-white);
+}
+
+.nav-menu-btn:hover .bar-white {
+  width: 75%;
+}
+
+/* =========================================
+4. 側邊選單抽屜 (與 style.css / style5.css 同步)
+   ========================================= */
+.menu-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.menu-drawer.open {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.menu-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.72);
+}
+
+.menu-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(420px, 85vw);
+  height: 100%;
+  background-color: var(--bg-black);
+  border-left: 3px solid var(--brand-orange);
+  padding: 48px 36px;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+}
+
+.menu-drawer.open .menu-drawer-panel {
+  transform: translateX(0);
+}
+
+.menu-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  color: var(--brand-orange);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.menu-nav-list {
+  list-style: none;
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menu-nav-list a {
+  display: block;
+  padding: 14px 0;
+  color: var(--pure-white);
+  text-decoration: none;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid var(--brand-orange);
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.menu-nav-list a:hover {
+  color: var(--brand-orange);
+  padding-left: 8px;
+}
+
+/* =========================================
+5. 共用橘色圓形箭頭按鈕 (prev / next)
+   ========================================= */
+.circle-arrow-btn {
+  width: var(--arrow-btn-size);
+  height: var(--arrow-btn-size);
+  border-radius: 50%;
+  background-color: var(--brand-orange);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.circle-arrow-btn img {
+  width: 78%;
+  height: 78%;
+  display: block;
+  object-fit: contain;
+}
+
+/* 原圖 keyboard_backspace 朝左，arrow-next 旋轉 180 度指向右 */
+.circle-arrow-btn.arrow-next img {
+  transform: rotate(180deg);
+}
+
+.circle-arrow-btn:hover {
+  transform: scale(1.07);
+}
+
+.circle-arrow-btn.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ========================================================================
+   6. VIEW 1: 1-1-1 / 1-1-2 插座世界地圖
+   ======================================================================== */
+.view-map {
+  height: 100vh;
+  overflow: hidden;
+  padding-top: var(--map-top);
+}
+
+/* 地圖等比容器：鎖定白色底圖 1385×755 原始比例，讓橘色點與白點正中對齊 */
+.map-stage {
+  position: relative;
+  width: calc(var(--stage-w) * 0.8015); /* 1385 / 1728 */
+  aspect-ratio: 1385 / 755;
+  margin: 0 auto;
+}
+
+.map-base-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+  pointer-events: none;
+}
+
+/* 1-1-2 橘色覆蓋層群組：切換時正中對齊白底，滑鼠移動時微幅上下左右視差跟隨 */
+.map-overlay-group {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* 維持 GPU 合成層常駐（不切換 visibility），避免大尺寸地圖 PNG 切換時重新上傳紋理造成抽幀 */
+.map-region-layer {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-region-layer.is-visible {
+  opacity: 1;
+}
+
+.map-region-layer > img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+/* 各區橘色覆蓋層像素校準比例 (與 map-base.png 點陣中心 96%–98% 精準重疊) */
+.layer-usa {
+  left: 0%;
+  top: 0%;
+  width: 92.3922%;
+  height: 72.8850%;
+}
+
+.layer-mainland {
+  left: 28.0144%;
+  top: 0%;
+  width: 71.9805%;
+  height: 100.0331%;
+}
+
+.layer-uk {
+  left: 45.7040%;
+  top: 24.5033%;
+  width: 33.5968%;
+  height: 51.1152%;
+}
+
+/* 舊英規格雙圖層直接以 1385×755 地圖座標系獨立對齊 */
+.layer-old-uk {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.layer-old-uk .old-uk-map2 {
+  position: absolute;
+  left: 29.4585%;
+  top: 32.4503%;
+  width: 69.0762%;
+  height: 62.0922%;
+  object-fit: fill;
+}
+
+.layer-old-uk .old-uk-map1 {
+  position: absolute;
+  left: 51.4801%;
+  top: 40.6623%;
+  width: 24.9635%;
+  height: 43.1237%;
+  object-fit: fill;
+}
+
+/* 左下角「插座 世界地圖」標題區 (x=214, y=716 -> 相對於 stage 163, 130) */
+.map-title-block {
+  position: absolute;
+  left: 3.66%;     /* (214 - 163) / 1394 */
+  bottom: 4.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 4;
+}
+
+.map-heading {
+  font-size: var(--font-40);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.2em;
+  color: var(--brand-orange);
+}
+
+.map-subheading-line {
+  margin-top: 0.8vh;
+  width: 12.96vw; /* 224 / 1728 */
+  height: 1px;
+  background-color: var(--brand-orange);
+}
+
+/* 下方四組規格按鈕與右下箭頭 (top: 942 / 1117 = 84.33vh) */
+.map-controls {
+  position: absolute;
+  top: var(--map-controls-top);
+  left: 0;
+  width: 100%;
+  padding-left: 12.38vw;  /* 214 / 1728 */
+  padding-right: 4.63vw;  /* 80 / 1728 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.map-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 7.5vw; /* 130–135 / 1728 */
+}
+
+.region-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 2.55vw; /* 44 / 1728 */
+  padding: 0;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.region-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* button-2 (空心) <-> button-3 (填滿) */
+.region-circle {
+  position: relative;
+  width: min(4.63vw, 7.16vh);  /* 80 / 1728 */
+  height: min(4.63vw, 7.16vh);
+  display: block;
+  flex-shrink: 0;
+}
+
+.region-circle img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.region-circle .circle-hollow {
+  opacity: 1;
+}
+
+.region-circle .circle-filled {
+  opacity: 0;
+  transform: scale(0.86);
+}
+
+.region-btn.is-active .circle-hollow {
+  opacity: 0;
+}
+
+.region-btn.is-active .circle-filled {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.region-label {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: var(--font-40);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.2em;
+  color: var(--brand-orange);
+  white-space: nowrap;
+}
+
+/* ========================================================================
+   7. VIEW 2: 1-2-1 ～ 1-2-6 插頭圖鑑
+   ======================================================================== */
+.view-gallery {
+  padding-top: 11.2vh; /* 標題於 125–143h */
+  padding-bottom: 10vh;
+}
+
+.gallery-heading {
+  text-align: center;
+  font-size: var(--font-64);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  padding-left: 0.1em;
+  color: var(--brand-orange);
+}
+
+/* 規格切換列 (1030 × 94，上下橘線 + Sliding Pill 滑動橘底) */
+.spec-tabs-bar {
+  position: relative;
+  width: var(--tab-bar-w);
+  height: var(--tab-bar-h);
+  margin: 3.8vh auto 0;
+  border-top: var(--line-weight) solid var(--brand-orange);
+  border-bottom: var(--line-weight) solid var(--brand-orange);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: calc(var(--stage-w) * 0.012);
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* Sliding Pill：上下各延伸 1px 吃進橘色框線內，避免高 DPI / 小數像素出現 1px 黑縫 */
+.spec-sliding-pill {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  background-color: var(--brand-orange);
+  border-bottom-left-radius: var(--card-radius);
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform, width;
+  transition:
+    transform 0.38s cubic-bezier(0.32, 1.18, 0.64, 1),
+    width 0.38s cubic-bezier(0.32, 1.18, 0.64, 1);
+}
+
+.spec-sliding-pill.no-transition {
+  transition: none;
+}
+
+.spec-tab {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 0 calc(var(--stage-w) * 0.0135);
+  background: transparent;
+  border: none;
+  border-bottom-left-radius: var(--card-radius);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: var(--font-32);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding-left: calc(var(--stage-w) * 0.0135 + 0.1em);
+  color: var(--brand-orange);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.spec-tab.tab-all {
+  min-width: calc(var(--stage-w) * 0.0718); /* 124 / 1728 */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-40);
+  letter-spacing: 0.2em;
+  padding-left: calc(var(--stage-w) * 0.0135 + 0.2em);
+}
+
+.spec-tab:hover:not(.is-active) {
+  color: var(--pure-white);
+}
+
+.spec-tab.is-active {
+  color: var(--bg-black);
+}
+
+/* 5 欄插頭卡片網格 (width: 1300 / 1728) */
+.gallery-card-grid {
+  width: var(--card-grid-w);
+  margin: 4.5vh auto 0;
+  display: grid;
+  grid-template-columns: repeat(5, var(--card-w));
+  column-gap: calc(var(--stage-w) * 0.0260); /* 45 / 1728 */
+  row-gap: calc(var(--stage-w) * 0.0486);    /* 84 / 1728 */
+}
+
+/* 單張插頭卡片 (224 × 270，橘底 + 左下圓角 35 + Slide-to-Confirm 底部條) */
+.plug-card {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  background-color: var(--brand-orange);
+  border: none;
+  border-bottom-left-radius: var(--card-radius);
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 16.67%; /* 留出底部 45/270 灰條高度 */
+  transition: transform 0.24s ease;
+}
+
+.plug-card:hover,
+.plug-card:focus-visible {
+  transform: translateY(-0.5vh);
+}
+
+.plug-card-icon-wrap {
+  width: calc(var(--stage-w) * 0.0781); /* 135×135 */
+  height: calc(var(--stage-w) * 0.0781);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plug-card-icon {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* 右下灰色條塊：預設佔右側 66.07%，滑入時向左滑展成滿版確認軌道 */
+.plug-card-gray-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 66.07%;
+  height: 16.67%;
+  background-color: var(--card-gray);
+  pointer-events: none;
+  transition: width 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plug-card:hover .plug-card-gray-bar,
+.plug-card:focus-visible .plug-card-gray-bar {
+  width: 100%;
+}
+
+/* 1-3 section heading 同款 TYPE - 前綴：預設隱藏於左側，滑入時向右滑現 */
+.plug-card-type-prefix {
+  position: absolute;
+  left: 14.5%;
+  bottom: 3.67%; /* 與底部 16.67% 條塊垂直置中 ((16.67 - 9.33)/2) */
+  height: 9.33%; /* 25.2 / 270，與字母滑入確認態等高 */
+  display: flex;
+  align-items: center;
+  gap: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-28%);
+  transition:
+    opacity 0.3s ease 0.05s,
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plug-card-type-word {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--stage-w) * 0.0028);
+}
+
+.plug-card-type-word img {
+  height: 100%;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.plug-card-type-dash {
+  display: block;
+  width: calc(var(--stage-w) * 0.0082);
+  height: calc(var(--stage-w) * 0.0021);
+  background-color: var(--bg-black);
+  margin-left: calc(var(--stage-w) * 0.0052);
+  margin-right: calc(var(--stage-w) * 0.0052);
+  flex-shrink: 0;
+}
+
+.plug-card:hover .plug-card-type-prefix,
+.plug-card:focus-visible .plug-card-type-prefix {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* 卡片字母：預設左下跨橘灰界線 (left: 22.77%, height: 16.67%)；滑入時向右滑移接於 TYPE - 後方 */
+.plug-card-letter {
+  position: absolute;
+  left: 22.77%;
+  bottom: 0;
+  height: 16.67%;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  transition:
+    left 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plug-card:hover .plug-card-letter,
+.plug-card:focus-visible .plug-card-letter {
+  left: 74.5%;
+  bottom: 3.67%;
+  height: 9.33%;
+}
+
+/* 1-2 左右圓形切換箭頭 */
+.gallery-prev-btn {
+  position: fixed;
+  left: var(--nav-pad-x);
+  top: var(--map-controls-top);
+  z-index: 40;
+}
+
+.gallery-next-btn {
+  position: fixed;
+  right: var(--nav-pad-x);
+  top: var(--map-controls-top);
+  z-index: 40;
+}
+
+/* ========================================================================
+   8. VIEW 3: 1-3 插頭詳細介紹頁 (完全依 1-3-K 與 1-3-F 間距規範)
+   ======================================================================== */
+.view-detail {
+  background-color: var(--bg-black);
+  padding-bottom: 8vh;
+}
+
+/* 上半部橘色主視覺區 (height: 581 / 1117 = 52.01vh) */
+.detail-hero {
+  position: relative;
+  width: 100%;
+  height: var(--detail-hero-h);
+  background-color: var(--brand-orange);
+}
+
+/* 左上 TYPE - [X] 標題群組 (left: 122 / 1728 = 7.06vw, top: 175 / 1117 = 15.67vh, width: 573 / 1728 = 33.16vw) */
+.detail-section-heading {
+  position: absolute;
+  left: 7.06vw;
+  top: 15.67vh;
+  width: 33.16vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.24vh; /* 24–25 / 1117 */
+}
+
+.detail-type-letters {
+  width: 100%;
+  height: min(8.15vh, 5.27vw); /* 91 / 1117 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.type-word-group {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.27vw; /* 22 / 1728 */
+}
+
+.type-word-group img,
+.type-letter-code {
+  height: 100%;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.type-dash {
+  display: block;
+  width: 2.95vw;  /* 51 / 1728 */
+  height: 1.16vh; /* 13 / 1117 */
+  background-color: var(--bg-black);
+  margin-left: 2.14vw;  /* 37 / 1728 */
+  margin-right: 2.60vw; /* 45 / 1728 */
+  flex-shrink: 0;
+}
+
+.detail-subheading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2vw; /* 1-3-K/F 副標間距 */
+  font-size: var(--font-20);
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--bg-black);
+  white-space: nowrap;
+}
+
+/* 右側雙圓圖示組 (left: 1200 / 1728 = 69.44vw, top: 130 / 1117 = 11.64vh, gap: 90 / 1117 = 8.06vh) */
+.detail-image-group {
+  position: absolute;
+  left: 69.44vw;
+  top: 11.64vh;
+  width: var(--detail-circle-size);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8.06vh; /* 90 / 1117 */
+  z-index: 10;
+}
+
+.detail-diagram-circle {
+  width: var(--detail-circle-size);
+  height: var(--detail-circle-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-diagram-circle img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.detail-photo-circle {
+  width: var(--detail-circle-size);
+  height: var(--detail-circle-size);
+  border-radius: 50%;
+  background-color: var(--brand-orange);
+  padding: 10.6%; /* 43 / 406 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.detail-photo-circle img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* 下半部黑色背景資訊區 (left: 80 / 1728 = 4.63vw, top 距 581 -> 668 = 87h = 7.79vh) */
+.detail-info-section {
+  position: relative;
+  width: 100%;
+  padding-top: 7.79vh;  /* (668 - 581) / 1117 */
+  padding-left: var(--nav-pad-x);
+  padding-right: 34vw;  /* 避開右側 406px 雙圓圖示 */
+}
+
+.detail-info-columns {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.31vw; /* 40 / 1728 (1-3-F: 39, 1-3-K: 40) */
+}
+
+.detail-accordion {
+  flex-shrink: 0;
+}
+
+#accordion-specs {
+  width: 28.59vw; /* 494 / 1728 */
+}
+
+#accordion-safety {
+  width: 28.99vw; /* 501 / 1728 */
+}
+
+.accordion-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4.30vh; /* 48 / 1117 */
+}
+
+.accordion-heading-left {
+  width: 25.93vw; /* 448 / 1728 */
+}
+
+.accordion-heading-right {
+  width: 26.22vw; /* 453 / 1728 */
+}
+
+.accordion-heading h2 {
+  font-size: var(--font-40);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--pure-white);
+  white-space: nowrap;
+}
+
+/* button-turn on (+) / button-turn off (×) 45×45 */
+.btn-turn-toggle {
+  position: relative;
+  width: min(2.60vw, 4.03vh);  /* 45 / 1728 */
+  height: min(2.60vw, 4.03vh);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+}
+
+.btn-turn-toggle:hover {
+  transform: scale(1.1);
+}
+
+.btn-turn-toggle img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+/* 原始 button-turn-off.svg 為黑底線條，反轉為純白以清楚呈現於黑底 */
+.btn-turn-toggle .icon-turn-off {
+  filter: invert(1);
+  opacity: 0;
+  transform: rotate(-45deg) scale(0.8);
+}
+
+.btn-turn-toggle .icon-turn-on {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.detail-accordion.is-open .btn-turn-toggle .icon-turn-on {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.8);
+}
+
+.detail-accordion.is-open .btn-turn-toggle .icon-turn-off {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Drop-down Menu 展開與收回過渡動畫 */
+.detail-dropdown {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  transition: grid-template-rows 0.32s ease, opacity 0.28s ease, margin-top 0.32s ease;
+}
+
+.detail-accordion.is-open .detail-dropdown {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 3.85vh; /* 42–44 / 1117 */
+}
+
+.detail-dropdown-inner {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
+}
+
+.spec-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.60vw; /* 45 / 1728 (1-3-F: 45, 1-3-K: 44) */
+  min-height: 4.03vh; /* 45 / 1117 */
+  font-size: var(--font-20);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--pure-white);
+}
+
+.spec-info-label {
+  width: 5.21vw; /* 90 / 1728 */
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.spec-info-value {
+  flex: 1;
+  letter-spacing: 0.1em;
+}
+
+.spec-val-mono {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+}
+
+.spec-val-pins {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-weight: 200;
+  letter-spacing: 0.18em;
+  white-space: pre-line;
+}
+
+.spec-val-safety {
+  line-height: 1.55;
+}
+
+/* 返回 1-2 插頭圖鑑按鈕：置於上方橘色區，左對齊 TYPE-? (7.06vw)、底對齊上方插頭圖 (11.64vh + 圓高)，顏色黑橘對調 */
+.detail-back-btn {
+  position: absolute;
+  left: 7.06vw;
+  bottom: calc(var(--detail-hero-h) - 11.64vh - var(--detail-circle-size));
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vw;
+  padding: 0.75vh 1.6vw;
+  border-radius: 999px;
+  border: var(--line-weight) solid var(--bg-black);
+  background-color: var(--brand-orange);
+  color: var(--bg-black);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: var(--font-16);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.detail-back-btn img {
+  width: 1.25em;
+  height: 1.25em;
+  filter: brightness(0);
+  transition: filter 0.2s ease;
+}
+
+.detail-back-btn:hover {
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+}
+
+.detail-back-btn:hover img {
+  filter: invert(41%) sepia(93%) saturate(2258%) hue-rotate(4deg) brightness(95%) contrast(94%);
+}

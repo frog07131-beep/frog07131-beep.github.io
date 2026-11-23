@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLUG IN - 插座世界地圖與插頭圖鑑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style3.css">
+</head>
+<body data-view="map">
+
+  <!-- ==================== 頂部導覽列 (與 travel / search 一致) ==================== -->
+  <header class="top-nav">
+    <a href="./guide.html" class="nav-logo" id="nav-logo" aria-label="返回插座世界地圖">
+      <img src="./img/button-logo.svg" alt="PLUG IN Logo">
+    </a>
+
+    <button type="button" id="menu-btn" class="nav-menu-btn" aria-label="開啟選單" aria-expanded="false">
+      <span class="menu-bar bar-primary"></span>
+      <span class="menu-bar bar-primary"></span>
+      <span class="menu-bar bar-white"></span>
+    </button>
+  </header>
+
+  <!-- ==================== 側邊選單遮罩 ==================== -->
+  <aside class="menu-drawer" id="menu-drawer" aria-hidden="true">
+    <div class="menu-drawer-backdrop" id="menu-backdrop"></div>
+    <nav class="menu-drawer-panel" aria-label="網站選單">
+      <button type="button" class="menu-close-btn" id="menu-close-btn" aria-label="關閉選單">✕</button>
+      <ul class="menu-nav-list">
+        <li><a href="./guide.html?view=map" data-nav-view="map">1-1 插座世界地圖</a></li>
+        <li><a href="./guide.html?view=gallery&spec=all&page=1" data-nav-view="gallery">1-2 插頭圖鑑（A–O）</a></li>
+        <li><a href="./travel.html">2-1 旅行查詢器</a></li>
+        <li><a href="./search.html?from=TW&to=CN">2-2 查詢結果範例</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ========================================================================
+       VIEW 1: 1-1-1 / 1-1-2 插座世界地圖
+       ======================================================================== -->
+  <main class="view-section view-map is-active" id="view-map" aria-label="插座世界地圖">
+
+    <!-- 世界地圖舞台（等比鎖定 1385×755，確保白色底圖與 1-1-2 橘色群組點對點正中對齊） -->
+    <section class="map-stage" id="map-stage" aria-label="全球插座規格分布地圖">
+      <!-- 1-1-1 白色點陣世界地圖底圖 -->
+      <img src="./img/map-base.png" alt="全球插座規格世界地圖" class="map-base-img">
+
+      <!-- 1-1-2 對應四區橘色群組覆蓋層 (image-xxx-guide，正中對齊且支援滑鼠微幅視差) -->
+      <div class="map-overlay-group" id="map-overlay-group" aria-hidden="true">
+        <!-- image-USA guide -->
+        <div class="map-region-layer layer-usa" data-region-layer="usa">
+          <img src="./img/map-usa-guide.png" alt="美式規格分布區域">
+        </div>
+
+        <!-- image-Mainland guide -->
+        <div class="map-region-layer layer-mainland" data-region-layer="mainland">
+          <img src="./img/map-mainland-guide.png" alt="大陸規格分布區域">
+        </div>
+
+        <!-- image-UK guide -->
+        <div class="map-region-layer layer-uk" data-region-layer="uk">
+          <img src="./img/map-uk-guide.png" alt="英式規格分布區域">
+        </div>
+
+        <!-- image-Old UK guide (雙圖層獨立精準對齊) -->
+        <div class="map-region-layer layer-old-uk" data-region-layer="old-uk">
+          <img src="./img/map-old-uk-2.png" alt="舊英規格分布區域" class="old-uk-map2">
+          <img src="./img/map-old-uk-1.png" alt="" class="old-uk-map1">
+        </div>
+      </div>
+
+      <!-- 左下角「插座 世界地圖」標題與橘色底線 -->
+      <div class="map-title-block">
+        <h1 class="map-heading">插座<br>世界地圖</h1>
+        <div class="map-subheading-line" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- 下方規格切換按鈕區 (單選模式：一次僅能選擇一個規格) -->
+    <div class="map-controls">
+      <div class="map-btn-group" role="radiogroup" aria-label="選擇要顯示的插座規格區域（單選）">
+
+        <button type="button" class="region-btn" data-region="usa" role="radio" aria-checked="false">
+          <span class="region-circle">
+            <img src="./img/button-2.svg" alt="" class="circle-hollow">
+            <img src="./img/button-3.svg" alt="" class="circle-filled">
+          </span>
+          <span class="region-label">美式<br>規格</span>
+        </button>
+
+        <button type="button" class="region-btn" data-region="mainland" role="radio" aria-checked="false">
+          <span class="region-circle">
+            <img src="./img/button-2.svg" alt="" class="circle-hollow">
+            <img src="./img/button-3.svg" alt="" class="circle-filled">
+          </span>
+          <span class="region-label">大陸<br>規格</span>
+        </button>
+
+        <button type="button" class="region-btn" data-region="uk" role="radio" aria-checked="false">
+          <span class="region-circle">
+            <img src="./img/button-2.svg" alt="" class="circle-hollow">
+            <img src="./img/button-3.svg" alt="" class="circle-filled">
+          </span>
+          <span class="region-label">英式<br>規格</span>
+        </button>
+
+        <button type="button" class="region-btn" data-region="old-uk" role="radio" aria-checked="false">
+          <span class="region-circle">
+            <img src="./img/button-2.svg" alt="" class="circle-hollow">
+            <img src="./img/button-3.svg" alt="" class="circle-filled">
+          </span>
+          <span class="region-label">舊英<br>規格</span>
+        </button>
+
+      </div>
+
+      <!-- 右下角前往 1-2 插頭圖鑑箭頭按鈕 -->
+      <button type="button" class="circle-arrow-btn arrow-next" id="map-to-gallery-btn" aria-label="前往插頭圖鑑">
+        <img src="./img/arrow-outlined.svg" alt="前往插頭圖鑑">
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================
+       VIEW 2: 1-2-1 ～ 1-2-6 插頭圖鑑
+       ======================================================================== -->
+  <main class="view-section view-gallery" id="view-gallery" aria-label="插頭圖鑑">
+
+    <h1 class="gallery-heading">插頭圖鑑</h1>
+
+    <!-- 規格篩選列 (Sliding Pill 滑動橘色指示膠囊) -->
+    <nav class="spec-tabs-bar" id="spec-tabs" aria-label="插頭規格篩選">
+      <span class="spec-sliding-pill" id="spec-sliding-pill" aria-hidden="true"></span>
+      <button type="button" class="spec-tab tab-all is-active" data-spec="all">ALL</button>
+      <button type="button" class="spec-tab" data-spec="mainland">大陸規格</button>
+      <button type="button" class="spec-tab" data-spec="us">美式規格</button>
+      <button type="button" class="spec-tab" data-spec="uk">英式規格</button>
+      <button type="button" class="spec-tab" data-spec="old-uk">舊英規格</button>
+    </nav>
+
+    <!-- 插頭卡片網格（由 JS 動態渲染 card-A ～ card-O） -->
+    <section class="gallery-card-grid" id="gallery-card-grid" aria-live="polite" aria-label="插頭卡片列表"></section>
+
+    <!-- 左下上一頁（回 1-1 地圖或 1-2-1）／ 右下下一頁（前往 1-2-2 K-O） -->
+    <button type="button" class="circle-arrow-btn gallery-prev-btn" id="gallery-prev-btn" aria-label="上一頁">
+      <img src="./img/arrow-outlined.svg" alt="上一頁">
+    </button>
+
+    <button type="button" class="circle-arrow-btn arrow-next gallery-next-btn" id="gallery-next-btn" aria-label="下一頁">
+      <img src="./img/arrow-outlined.svg" alt="下一頁">
+    </button>
+
+  </main>
+
+  <!-- ========================================================================
+       VIEW 3: 1-3 插頭詳細介紹頁 (A–O，依 1-3-K 與 1-3-F 版面間距規範)
+       ======================================================================== -->
+  <main class="view-section view-detail" id="view-detail" aria-label="插頭詳細介紹">
+
+    <!-- 上半部橘色主視覺區 (height: 581 / 1117 = 52.01vh) -->
+    <section class="detail-hero">
+      <div class="detail-section-heading">
+        <!-- TYPE - [A..O] 幾何像素字母標題 -->
+        <div class="detail-type-letters" id="detail-type-letters" aria-label="插頭型號">
+          <div class="type-word-group">
+            <img src="./img/letter-T.png" alt="T" class="type-letter-t">
+            <img src="./img/letter-Y.png" alt="Y" class="type-letter-y">
+            <img src="./img/letter-P.png" alt="P" class="type-letter-p">
+            <img src="./img/letter-E.png" alt="E" class="type-letter-e">
+          </div>
+          <span class="type-dash" aria-hidden="true"></span>
+          <img src="./img/letter-F.png" alt="F" class="type-letter-code" id="detail-letter-img">
+        </div>
+
+        <!-- 規格代號 + 簡介副標 -->
+        <div class="detail-subheading">
+          <span class="detail-serial" id="detail-serial">CEE 7/4</span>
+          <span class="detail-desc" id="detail-desc">北歐主要插頭規格，無極性設計</span>
+        </div>
+      </div>
+
+      <!-- 返回 1-2 插頭圖鑑按鈕：固定於上方橘色區，左對齊 TYPE-?、底對齊上方插頭圖 -->
+      <button type="button" class="detail-back-btn" id="detail-back-btn" aria-label="返回插頭圖鑑">
+        <img src="./img/arrow-outlined.svg" alt="">
+        <span>返回圖鑑</span>
+      </button>
+    </section>
+
+    <!-- 右側雙圓圖示區 (x=1200, y=130, width=406, gap=90) -->
+    <aside class="detail-image-group" aria-label="插頭外觀與插座示意圖">
+      <!-- 上圓：黑色線稿插座圖示 (406×406) -->
+      <div class="detail-diagram-circle">
+        <img src="./img/plug-type-F.png" alt="插頭平面規格圖" id="detail-diagram-img">
+      </div>
+
+      <!-- 下圓：橘色圓底 + 插頭立體圖 (406×406) -->
+      <div class="detail-photo-circle">
+        <img src="./img/plug-3d-F.png" alt="插頭實體示意圖" id="detail-photo-img">
+      </div>
+    </aside>
+
+    <!-- 下半部黑色背景資訊區 (left=80, top=668, 兩欄 Drop-down Menu) -->
+    <section class="detail-info-section">
+      <div class="detail-info-columns">
+
+        <!-- 左欄 card1：技術規格 + button-turn on/off + Drop-down Menu1 -->
+        <article class="detail-accordion" id="accordion-specs">
+          <div class="accordion-heading accordion-heading-left">
+            <h2>技術規格</h2>
+            <button
+              type="button"
+              class="btn-turn-toggle"
+              id="toggle-specs-btn"
+              aria-expanded="false"
+              aria-controls="dropdown-specs"
+              aria-label="展開技術規格"
+            >
+              <img src="./img/button-turn-on.svg" alt="" class="icon-turn-on">
+              <img src="./img/button-turn-off.svg" alt="" class="icon-turn-off">
+            </button>
+          </div>
+
+          <div class="detail-dropdown" id="dropdown-specs" aria-hidden="true">
+            <div class="detail-dropdown-inner">
+              <div class="spec-info-row">
+                <span class="spec-info-label">適用國家</span>
+                <span class="spec-info-value" id="detail-countries"></span>
+              </div>
+              <div class="spec-info-row">
+                <span class="spec-info-label">額定電壓</span>
+                <span class="spec-info-value spec-val-mono" id="detail-voltage"></span>
+              </div>
+              <div class="spec-info-row">
+                <span class="spec-info-label">額定電流</span>
+                <span class="spec-info-value spec-val-mono" id="detail-current"></span>
+              </div>
+              <div class="spec-info-row spec-row-multiline">
+                <span class="spec-info-label">腳位資訊</span>
+                <div class="spec-info-value spec-val-pins" id="detail-pins"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 右欄 card2：安全指引與補充 + button-turn on/off + Drop-down Menu2 -->
+        <article class="detail-accordion" id="accordion-safety">
+          <div class="accordion-heading accordion-heading-right">
+            <h2>安全指引與補充</h2>
+            <button
+              type="button"
+              class="btn-turn-toggle"
+              id="toggle-safety-btn"
+              aria-expanded="false"
+              aria-controls="dropdown-safety"
+              aria-label="展開安全指引與補充"
+            >
+              <img src="./img/button-turn-on.svg" alt="" class="icon-turn-on">
+              <img src="./img/button-turn-off.svg" alt="" class="icon-turn-off">
+            </button>
+          </div>
+
+          <div class="detail-dropdown" id="dropdown-safety" aria-hidden="true">
+            <div class="detail-dropdown-inner">
+              <div class="spec-info-row">
+                <span class="spec-info-label">適用插座</span>
+                <span class="spec-info-value" id="detail-socket"></span>
+              </div>
+              <div class="spec-info-row">
+                <span class="spec-info-label">外觀特徵</span>
+                <span class="spec-info-value" id="detail-appearance"></span>
+              </div>
+              <div class="spec-info-row spec-row-multiline">
+                <span class="spec-info-label">安全提示</span>
+                <p class="spec-info-value spec-val-safety" id="detail-safety"></p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="./js/guide.js"></script>
+</body>
+</html>

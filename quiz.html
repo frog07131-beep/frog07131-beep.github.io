@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLUG IN - 用電安全隨堂考</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style4.css">
+</head>
+<body data-stage="intro">
+
+  <!-- 精準品牌橘 (#E5550D) SVG 濾鏡：將透明黑底插頭 PNG 精確著色為 #E5550D -->
+  <svg width="0" height="0" style="position:absolute;pointer-events:none;" aria-hidden="true">
+    <defs>
+      <filter id="quiz-orange-tint" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0 0 0 0 0.898039  0 0 0 0 0.333333  0 0 0 0 0.050980  0 0 0 1 0"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ==================== 頂部導覽列 (與 guide / travel / search 一致) ==================== -->
+  <header class="top-nav">
+    <a href="./guide.html" class="nav-logo" aria-label="返回 PLUG IN">
+      <img src="./img/button-logo.svg" alt="PLUG IN Logo">
+    </a>
+
+    <button type="button" id="menu-btn" class="nav-menu-btn" aria-label="開啟選單" aria-expanded="false">
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-white"></span>
+    </button>
+  </header>
+
+  <!-- ==================== 側邊選單遮罩 ==================== -->
+  <aside class="menu-drawer" id="menu-drawer" aria-hidden="true">
+    <div class="menu-drawer-backdrop" id="menu-backdrop"></div>
+    <nav class="menu-drawer-panel" aria-label="網站選單">
+      <button type="button" class="menu-close-btn" id="menu-close-btn" aria-label="關閉選單">✕</button>
+      <ul class="menu-nav-list">
+        <li><a href="./guide.html?view=map">1-1 插座世界地圖</a></li>
+        <li><a href="./guide.html?view=gallery&spec=all&page=1">1-2 插頭圖鑑</a></li>
+        <li><a href="./travel.html">2-1 旅行查詢器</a></li>
+        <li><a href="./search.html?from=TW&to=CN">2-2 查詢結果</a></li>
+        <li><a href="./quiz.html">4-1 用電安全隨堂考</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ========================================================================
+       STAGE 1: 4-1 小測驗說明頁 (38:144)
+       ======================================================================== -->
+  <main class="quiz-stage stage-intro is-active" id="stage-intro" aria-label="用電安全隨堂考說明">
+    <div class="notched-board">
+      <!-- 底部背板圖片 (Figma background_panel: x=80, y=85, w=1576, h=942) -->
+      <img src="./img/quiz-bg-panel.png" alt="" class="board-bg-img" aria-hidden="true">
+
+      <!-- 主標題區 (Headline: x=438, y=196, w=852) -->
+      <header class="intro-headline">
+        <h1>用電安全隨堂考</h1>
+        <div class="intro-divider" aria-hidden="true"></div>
+      </header>
+
+      <!-- 內容說明區 (content: x=349, y=311, w=1030) -->
+      <section class="intro-content">
+        <div class="intro-block">
+          <h2 class="intro-label">遊戲介紹</h2>
+          <p class="intro-text">
+            透過 7 道用電安全相關題目，測試玩家對日常用電知識的了解程度。<br>
+            題目涵蓋插座使用、延長線安全、電器使用及用電意外處理等，讓玩家在遊戲中學習正確的用電觀念。
+          </p>
+        </div>
+
+        <div class="intro-block">
+          <h2 class="intro-label">遊戲規則</h2>
+          <div class="intro-rule-grid">
+            <ol class="rule-steps">
+              <li>1. 遊戲總共 7 題，每題答對得 1 分</li>
+              <li>2. 玩家依序回答所有題目</li>
+              <li>3. 完成 7 題後，系統依答對題數判定結果</li>
+            </ol>
+
+            <dl class="rule-tiers">
+              <div class="tier-row">
+                <dt>6-7分</dt>
+                <dd>GOOD</dd>
+              </div>
+              <div class="tier-row">
+                <dt>3-5分</dt>
+                <dd>PASS</dd>
+              </div>
+              <div class="tier-row">
+                <dt>3分以下</dt>
+                <dd>FAIL</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- 左下切角開始按鈕 (button_play: x=214, y=897, w=359, h=90) -->
+      <button type="button" class="btn-play" id="btn-start-quiz">
+        <span>PLAY</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       STAGE 2: 4-2 關卡 1 ～ 關卡 7
+       ======================================================================== -->
+  <main class="quiz-stage stage-question" id="stage-question" aria-label="測驗關卡">
+    <div class="notched-board">
+      <img src="./img/quiz-bg-panel.png" alt="" class="board-bg-img" aria-hidden="true">
+
+      <!-- 題目區 (Question: x=214, y=220, w=1031) -->
+      <section class="question-area">
+        <div class="question-meta-row">
+          <div class="question-number" id="question-number">
+            <span>第</span>
+            <strong id="question-index-num">1</strong>
+            <span>題</span>
+          </div>
+          <div class="question-progress" id="question-progress" aria-label="答題進度">1 / 7</div>
+        </div>
+
+        <div class="question-body">
+          <h2 class="question-text" id="question-text"></h2>
+          <div class="question-visual" id="question-visual" hidden>
+            <img src="./img/plug-type-F.png" alt="題目示意插頭" id="question-visual-img">
+          </div>
+        </div>
+      </section>
+
+      <!-- 選項區 (option: x=304, y=581, w=1120，三個等寬選項卡 A/B/C) -->
+      <section class="options-row" id="options-row" role="radiogroup" aria-label="題目選項"></section>
+
+      <!-- 未選取提醒訊息 -->
+      <p class="quiz-hint" id="quiz-hint" role="alert" aria-live="polite"></p>
+
+      <!-- 左下切角導覽按鈕 (button: x=214, y=914, w=359, 兩顆 118×118 圓鈕) -->
+      <div class="question-nav-buttons">
+        <button type="button" class="quiz-circle-btn btn-prev" id="btn-prev" aria-label="返回上一題">
+          <img src="./img/arrow-outlined.svg" alt="" class="circle-btn-icon">
+          <span class="circle-btn-text" id="btn-prev-label">BACK</span>
+        </button>
+
+        <button type="button" class="quiz-circle-btn btn-next" id="btn-next" aria-label="前往下一題">
+          <span class="circle-btn-text" id="btn-next-label">NEXT</span>
+          <img src="./img/arrow-outlined.svg" alt="" class="circle-btn-icon icon-right">
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       STAGE 3: 4-3 加載中 (160:993)
+       ======================================================================== -->
+  <main class="quiz-stage stage-loading" id="stage-loading" aria-label="結果計算中" aria-live="polite">
+    <div class="loading-center">
+      <!-- 插頭通電動畫圖示 -->
+      <div class="plug-loader" aria-hidden="true">
+        <div class="loader-ring"></div>
+        <div class="loader-prongs">
+          <span class="prong"></span>
+          <span class="prong"></span>
+        </div>
+        <div class="loader-body"></div>
+      </div>
+
+      <p class="loading-title">LOADING</p>
+      <p class="loading-subtitle">正在為你計算用電安全測驗結果…</p>
+
+      <div class="loading-bar-track" aria-hidden="true">
+        <div class="loading-bar-fill" id="loading-bar-fill"></div>
+      </div>
+      <span class="loading-percent" id="loading-percent">0%</span>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       STAGE 4: 測驗結算 (承接 4-3 加載完成後顯示，對齊 4-4 GOOD/PASS/FAIL 分級)
+       ======================================================================== -->
+  <main class="quiz-stage stage-result" id="stage-result" aria-label="測驗結算結果">
+    <div class="result-panel">
+      <div class="result-hero">
+        <span class="result-score-pill" id="result-score-pill">答對 7 / 7 題</span>
+        <div class="result-grade-letters" id="result-grade-letters" aria-label="測驗等級"></div>
+        <p class="result-subhead" id="result-subhead"></p>
+
+        <div class="result-actions">
+          <button type="button" class="result-btn btn-playagain" id="btn-playagain">再玩一次</button>
+          <a href="./guide.html" class="result-btn btn-backhome">回到圖鑑</a>
+        </div>
+      </div>
+
+      <section class="result-review" aria-label="答題解析">
+        <h3>作答回顧與解析</h3>
+        <ul class="review-list" id="review-list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script src="./js/quiz.js"></script>
+</body>
+</html>
