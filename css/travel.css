@@ -1,0 +1,592 @@
+/* =========================================
+1. 浮動比例變數 (與 search.css 統一的 1728 × 1117 基準)
+   ========================================= */
+:root {
+  /* 色彩規範 */
+  --bg-black: #000000;
+  --brand-orange: #E5550D;
+  --pill-gray: #D9D9D9;
+  --pure-white: #FFFFFF;
+  --text-muted: #464444;
+  --hover-gray: #BEBBBA;
+
+  /* 框線粗度 (3 / 1728 = 0.1736vw) */
+  --line-weight: 0.174vw;
+
+  /* 頂部導覽與主區塊垂直比例 (vh) */
+  --nav-pad-x: 4.63vw;        /* 80 / 1728 */
+  --logo-size: 4.05vw;        /* 70 / 1728 */
+  --nav-h: 15.67vh;           /* 175 / 1117 (與 search 頁一致) */
+  --gap-top: 12.17vh;         /* 311 - 175 = 136 -> 136 / 1117，總頂距維持 311h */
+  --gap-bottom: 11.64vh;      /* 底間隔 (130 / 1117) */
+  --main-h: 60.52vh;          /* 主區塊高 (676 / 1117) */
+  --row-bar-h: 16.11vh;       /* 上下排框高 (180 / 1117) */
+  --row-mid-h: 12.09vh;       /* 中排高 (135 / 1117) */
+  --space-45-h: 4.03vh;       /* 上下內距 / 國家選項高 (45 / 1117) */
+
+  /* 下拉選單比例 (與 search.css 統一) */
+  --dropdown-gap: 1.34vh;     /* 15 / 1117 */
+  --dropdown-cap-2h: 6.71vh;  /* 75 / 1117 */
+  --dropdown-cap-h: 2.69vh;   /* 30 / 1117 */
+  --option-h: 4.03vh;         /* 45 / 1117 */
+
+  /* 水平寬度與間距比例 (vw & %) */
+  --top-left-w: 74.65%;       /* 上排左框寬 (1290 / 1728) */
+  --mid-side-pad: 4.63vw;     /* 中排左右間隔 (80 / 1728) */
+  --bot-left-w: 28.01%;       /* 下排左框寬 (484 / 1728) */
+  --bot-right-w: 66.84%;      /* 下排右框寬 (1155 / 1728) */
+  --space-45-w: 2.60vw;       /* 45 / 1728 */
+  --space-90-w: 5.21vw;       /* 90 / 1728 */
+  --icon-90: 5.21vw;          /* 90 / 1728 */
+
+  /* 字級比例 (vw，與 search.css 統一) */
+  --font-36: 2.08vw;          /* 36 / 1728 */
+  --font-32: 1.85vw;          /* 32 / 1728 */
+  --font-20: 1.16vw;          /* 20 / 1728 */
+  --font-14: 0.81vw;          /* 14 / 1728 */
+  --font-10: max(10px, 0.58vw);
+}
+
+/* =========================================
+2. 全域重置與畫布
+   ========================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+  font-family: 'Noto Sans TC', sans-serif;
+  overflow-x: hidden;
+}
+
+/* =========================================
+3. 頂部導覽列 (Logo + Menu，與 search.css 同步)
+   ========================================= */
+.top-nav {
+  position: relative;
+  width: 100%;
+  height: var(--nav-h);
+  padding: 0 var(--nav-pad-x);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: block;
+  margin-top: 3.49vh; /* 39 / 1117 */
+  width: var(--logo-size);
+  height: var(--logo-size);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  transform: scale(1.06);
+  opacity: 0.9;
+}
+
+.nav-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.nav-menu-btn {
+  margin-top: 3.67vh; /* 41 / 1117 */
+  width: 5.79vw;      /* 100 / 1728 */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.34vh;        /* 15 / 1117 */
+  padding: 0;
+}
+
+.menu-bar {
+  display: block;
+  height: 1.07vh;     /* 12 / 1117 */
+  border-radius: 0.174vw;
+  transition: transform 0.2s ease, width 0.2s ease;
+}
+
+.bar-orange {
+  width: 100%;
+  background-color: var(--brand-orange);
+}
+
+.bar-white {
+  width: 50%;
+  background-color: var(--pure-white);
+}
+
+.nav-menu-btn:hover .bar-white {
+  width: 75%;
+}
+
+/* =========================================
+4. 主視覺畫布與三排架構
+   ========================================= */
+.canvas {
+  width: 100%;
+  padding-top: var(--gap-top);
+  padding-bottom: var(--gap-bottom);
+}
+
+.query-grid {
+  width: 100%;
+  height: var(--main-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* =========================================
+5. 上排區塊
+   ========================================= */
+.row-top {
+  width: 100%;
+  height: var(--row-bar-h);
+  display: flex;
+  justify-content: space-between;
+}
+
+.box-title {
+  width: var(--top-left-w);
+  height: 100%;
+  border: var(--line-weight) solid var(--brand-orange);
+  border-left: none;
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-90-w);
+  padding-top: var(--space-45-h);
+  padding-bottom: var(--space-45-h);
+}
+
+.main-title {
+  font-size: var(--font-36);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.6em;
+  color: var(--brand-orange);
+}
+
+.box-plane {
+  width: calc(100% - var(--top-left-w) - var(--space-90-w));
+  height: 100%;
+  border: var(--line-weight) solid var(--brand-orange);
+  border-right: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box-plane img {
+  width: min(var(--icon-90), 8.06vh);
+  height: min(var(--icon-90), 8.06vh);
+  object-fit: contain;
+  display: block;
+}
+
+/* =========================================
+6. 中排區塊與自訂下拉選單
+   ========================================= */
+.row-middle {
+  width: 100%;
+  height: var(--row-mid-h);
+  padding-left: var(--mid-side-pad);
+  padding-right: var(--mid-side-pad);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 30;
+}
+
+/* 左側兩顆膠囊 + 置中交換按鈕 (與 search.css 統一) */
+.search-action-area {
+  position: relative;
+  width: 74.77vw; /* 1292 / 1728 */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.input-pill {
+  position: relative;
+  width: 35.88vw; /* 620 / 1728 */
+  height: 100%;
+  background-color: var(--pill-gray);
+  border: var(--line-weight) solid var(--brand-orange);
+  border-radius: 999px;
+  transition: box-shadow 0.2s ease;
+}
+
+.input-pill.active,
+.input-pill:focus-within {
+  box-shadow: 0 0 0 0.15vw var(--brand-orange);
+}
+
+.pill-trigger {
+  width: 100%;
+  height: 100%;
+  padding-left: 5.73vw; /* 99 / 1728 (與 search 頁對齊) */
+  padding-right: 3.5vw;
+  display: flex;
+  align-items: center;
+  gap: 2.2vw;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 未選取時顯示橘色佔位文字；選取後轉為黑色大字並顯示右側小標 */
+.pill-text {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: var(--font-32);
+  font-weight: 500;
+  letter-spacing: 0.6em;
+  color: var(--brand-orange);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input-pill.has-value .pill-text {
+  color: var(--bg-black);
+}
+
+.pill-sublabel {
+  font-size: var(--font-10);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.input-pill.has-value .pill-sublabel {
+  opacity: 1;
+}
+
+/* 中間交換按鈕：置中重疊於兩顆膠囊之間 */
+.btn-swap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(var(--icon-90), 8.06vh);
+  height: min(var(--icon-90), 8.06vh);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.25s ease;
+}
+
+.btn-swap.rotated {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.btn-swap img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* 查詢按鈕 (與 search.css 統一) */
+.btn-submit {
+  width: 12.96vw; /* 224 / 1728 */
+  height: 100%;
+  background-color: var(--brand-orange);
+  border: var(--line-weight) solid var(--brand-orange);
+  border-radius: 999px;
+  color: var(--bg-black);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: var(--font-36);
+  font-weight: 500;
+  letter-spacing: 0.6em;
+  padding-left: 0.6em;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+}
+
+/* --- 下拉選單面板 (與 search.css 同步) --- */
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + var(--dropdown-gap));
+  left: 0;
+  width: 100%;
+  background-color: var(--pure-white);
+  border: var(--line-weight) solid var(--brand-orange);
+  border-radius: 2.03vw; /* 35 / 1728 */
+  overflow: hidden;
+  z-index: 100;
+  display: none;
+}
+
+.dropdown-panel.open {
+  display: block;
+}
+
+.dropdown-cap {
+  width: 100%;
+  height: var(--dropdown-cap-2h);
+  background-color: var(--pure-white);
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-90-w);
+  font-size: calc(var(--font-20) * 0.85);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--bg-black);
+}
+
+.dropdown-cap-bottom {
+  height: var(--dropdown-cap-h);
+}
+
+.option-list {
+  list-style: none;
+  width: 100%;
+}
+
+.option-item {
+  width: 100%;
+  height: var(--option-h);
+  background-color: var(--pure-white);
+  color: var(--bg-black);
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-90-w);
+  font-size: var(--font-20);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  border-top: 1px solid #000000;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.option-icon {
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.6em;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.option-item:hover,
+.option-item:active {
+  background-color: var(--hover-gray);
+  color: var(--brand-orange);
+}
+
+.option-item.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+  background-color: var(--pill-gray);
+  color: var(--bg-black);
+}
+
+/* =========================================
+7. 下排使用說明區塊
+   ========================================= */
+.row-bottom {
+  width: 100%;
+  height: var(--row-bar-h);
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-20);
+  letter-spacing: 0.1em;
+}
+
+.box-guide-label {
+  width: var(--bot-left-w);
+  height: 100%;
+  border: var(--line-weight) solid var(--brand-orange);
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-45-w);
+}
+
+.box-guide-steps {
+  width: var(--bot-right-w);
+  height: 100%;
+  border: var(--line-weight) solid var(--brand-orange);
+  border-right: none;
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-45-w);
+}
+
+.step-list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-45-w);
+}
+
+.step-list li {
+  white-space: nowrap;
+}
+
+/* =========================================
+8. 側邊選單抽屜 (與 search.css 同步)
+   ========================================= */
+.menu-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.menu-drawer.open {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.menu-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.72);
+}
+
+.menu-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(420px, 85vw);
+  height: 100%;
+  background-color: var(--bg-black);
+  border-left: 3px solid var(--brand-orange);
+  padding: 48px 36px;
+  overflow-x: hidden;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-drawer.open .menu-drawer-panel {
+  transform: translateX(0);
+}
+
+.menu-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  color: var(--brand-orange);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.menu-nav-list {
+  list-style: none;
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 選單選項預設（收合）狀態：向左偏移並隱藏，關閉時立即歸零延遲以便下次重播 */
+.menu-nav-list li {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.08s ease, transform 0.08s ease;
+  transition-delay: 0s;
+}
+
+/* 選單開啟狀態：由左至右平滑滑入並淡入 */
+.menu-drawer.open .menu-nav-list li {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.3s ease,
+    transform 0.325s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 選項逐項進場（Stagger）延遲設定：起始 0.075s，每項間隔 0.15s */
+.menu-drawer.open .menu-nav-list li:nth-child(1) { transition-delay: 0.075s; }
+.menu-drawer.open .menu-nav-list li:nth-child(2) { transition-delay: 0.225s; }
+.menu-drawer.open .menu-nav-list li:nth-child(3) { transition-delay: 0.375s; }
+.menu-drawer.open .menu-nav-list li:nth-child(4) { transition-delay: 0.525s; }
+.menu-drawer.open .menu-nav-list li:nth-child(5) { transition-delay: 0.675s; }
+.menu-drawer.open .menu-nav-list li:nth-child(6) { transition-delay: 0.825s; }
+
+/* 尊重使用者「減少動態效果」偏好設定，關閉過場與延遲 */
+@media (prefers-reduced-motion: reduce) {
+  .menu-drawer,
+  .menu-drawer-panel,
+  .menu-nav-list li {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+.menu-nav-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  color: var(--pure-white);
+  text-decoration: none;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid var(--brand-orange);
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.menu-nav-list a:hover {
+  color: var(--brand-orange);
+  padding-left: 8px;
+}
+
+.menu-nav-arrow {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.18s ease;
+}
+
+.menu-nav-list a:hover .menu-nav-arrow {
+  transform: translateX(4px);
+}
+
+.menu-nav-list a.is-coming-soon {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.menu-nav-list a.is-coming-soon:hover {
+  color: var(--pure-white);
+  padding-left: 0;
+}
+
+.menu-nav-list a.is-coming-soon:hover .menu-nav-arrow {
+  transform: none;
+}

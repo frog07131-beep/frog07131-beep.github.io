@@ -1,5 +1,5 @@
 /* =========================================
-1. 浮動比例變數 (與 style5.css 統一的 1728 × 1117 基準)
+1. 浮動比例變數 (與 search.css 統一的 1728 × 1117 基準)
    ========================================= */
 :root {
   /* 色彩規範 */
@@ -24,7 +24,7 @@
   --row-mid-h: 12.09vh;       /* 中排高 (135 / 1117) */
   --space-45-h: 4.03vh;       /* 上下內距 / 國家選項高 (45 / 1117) */
 
-  /* 下拉選單比例 (與 style5.css 統一) */
+  /* 下拉選單比例 (與 search.css 統一) */
   --dropdown-gap: 1.34vh;     /* 15 / 1117 */
   --dropdown-cap-2h: 6.71vh;  /* 75 / 1117 */
   --dropdown-cap-h: 2.69vh;   /* 30 / 1117 */
@@ -39,7 +39,7 @@
   --space-90-w: 5.21vw;       /* 90 / 1728 */
   --icon-90: 5.21vw;          /* 90 / 1728 */
 
-  /* 字級比例 (vw，與 style5.css 統一) */
+  /* 字級比例 (vw，與 search.css 統一) */
   --font-36: 2.08vw;          /* 36 / 1728 */
   --font-32: 1.85vw;          /* 32 / 1728 */
   --font-20: 1.16vw;          /* 20 / 1728 */
@@ -66,7 +66,7 @@ body {
 }
 
 /* =========================================
-3. 頂部導覽列 (Logo + Menu，與 style5.css 同步)
+3. 頂部導覽列 (Logo + Menu，與 search.css 同步)
    ========================================= */
 .top-nav {
   position: relative;
@@ -211,7 +211,7 @@ body {
   z-index: 30;
 }
 
-/* 左側兩顆膠囊 + 置中交換按鈕 (與 style5.css 統一) */
+/* 左側兩顆膠囊 + 置中交換按鈕 (與 search.css 統一) */
 .search-action-area {
   position: relative;
   width: 74.77vw; /* 1292 / 1728 */
@@ -305,7 +305,7 @@ body {
   object-fit: contain;
 }
 
-/* 查詢按鈕 (與 style5.css 統一) */
+/* 查詢按鈕 (與 search.css 統一) */
 .btn-submit {
   width: 12.96vw; /* 224 / 1728 */
   height: 100%;
@@ -328,7 +328,7 @@ body {
   color: var(--brand-orange);
 }
 
-/* --- 下拉選單面板 (與 style5.css 同步) --- */
+/* --- 下拉選單面板 (與 search.css 同步) --- */
 .dropdown-panel {
   position: absolute;
   top: calc(100% + var(--dropdown-gap));
@@ -451,7 +451,7 @@ body {
 }
 
 /* =========================================
-8. 側邊選單抽屜 (與 style5.css 同步)
+8. 側邊選單抽屜 (與 search.css 同步)
    ========================================= */
 .menu-drawer {
   position: fixed;
