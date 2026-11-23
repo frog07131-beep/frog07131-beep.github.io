@@ -311,24 +311,39 @@ body[data-view="detail"] .bar-primary {
   border-radius: 50%;
   background-color: var(--brand-orange);
   border: none;
+  color: var(--bg-black);
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.2vh;
   padding: 0;
-  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
-.circle-arrow-btn img {
-  width: 78%;
-  height: 78%;
+.circle-arrow-btn img,
+.circle-arrow-icon {
+  width: 38%;
+  height: 38%;
   display: block;
   object-fit: contain;
 }
 
 /* 原圖 keyboard_backspace 朝左，arrow-next 旋轉 180 度指向右 */
-.circle-arrow-btn.arrow-next img {
+.circle-arrow-btn.arrow-next img,
+.circle-arrow-btn.arrow-next .circle-arrow-icon {
   transform: rotate(180deg);
+}
+
+.circle-arrow-text {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: max(10px, 0.78vw);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  color: currentColor;
 }
 
 .circle-arrow-btn:hover {

@@ -239,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const specSlidingPill = document.getElementById('spec-sliding-pill');
   const galleryCardGrid = document.getElementById('gallery-card-grid');
   const galleryPrevBtn = document.getElementById('gallery-prev-btn');
+  const galleryPrevLabel = document.getElementById('gallery-prev-label');
   const galleryNextBtn = document.getElementById('gallery-next-btn');
 
   // 1-3 詳細頁控制
@@ -547,6 +548,13 @@ document.addEventListener('DOMContentLoaded', () => {
       fragment.appendChild(getPlugCardElement(typeKey));
     });
     galleryCardGrid.replaceChildren(fragment);
+
+    // 左下按鈕：ALL 第 2 頁回第 1 頁顯示 PREV，其餘回地圖頁顯示 BACK（與 quiz.js 一致）
+    const isSubPage = state.spec === 'all' && state.page > 1;
+    if (galleryPrevLabel) {
+      galleryPrevLabel.textContent = isSubPage ? 'PREV' : 'BACK';
+    }
+    galleryPrevBtn.setAttribute('aria-label', isSubPage ? '上一頁' : '返回插座世界地圖');
 
     // 控制右下角下一頁按鈕顯示（僅 ALL 第一頁有下一頁 K-O）
     galleryNextBtn.classList.toggle('is-hidden', state.page >= totalPages);

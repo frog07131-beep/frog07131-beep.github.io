@@ -7,7 +7,7 @@
     <link rel="icon" href="./img/button-logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/guide.css">
 </head>
 <body data-view="map">
@@ -146,7 +146,8 @@
 
       <!-- 右下角前往 1-2 插頭圖鑑箭頭按鈕 -->
       <button type="button" class="circle-arrow-btn arrow-next" id="map-to-gallery-btn" aria-label="前往插頭圖鑑">
-        <img src="./img/arrow-outlined.svg" alt="前往插頭圖鑑">
+        <span class="circle-arrow-text">NEXT</span>
+        <img src="./img/arrow-outlined.svg" alt="" class="circle-arrow-icon">
       </button>
     </div>
 
@@ -172,13 +173,15 @@
     <!-- 插頭卡片網格（由 JS 動態渲染 card-A ～ card-O） -->
     <section class="gallery-card-grid" id="gallery-card-grid" aria-live="polite" aria-label="插頭卡片列表"></section>
 
-    <!-- 左下上一頁（回 1-1 地圖或 1-2-1）／ 右下下一頁（前往 1-2-2 K-O） -->
-    <button type="button" class="circle-arrow-btn gallery-prev-btn" id="gallery-prev-btn" aria-label="上一頁">
-      <img src="./img/arrow-outlined.svg" alt="上一頁">
+    <!-- 左下上一頁（回 1-1 地圖顯示 BACK 或 1-2-2 回 1-2-1 顯示 PREV）／ 右下下一頁（前往 1-2-2 K-O 顯示 NEXT） -->
+    <button type="button" class="circle-arrow-btn gallery-prev-btn" id="gallery-prev-btn" aria-label="返回插座世界地圖">
+      <img src="./img/arrow-outlined.svg" alt="" class="circle-arrow-icon">
+      <span class="circle-arrow-text" id="gallery-prev-label">BACK</span>
     </button>
 
     <button type="button" class="circle-arrow-btn arrow-next gallery-next-btn" id="gallery-next-btn" aria-label="下一頁">
-      <img src="./img/arrow-outlined.svg" alt="下一頁">
+      <span class="circle-arrow-text" id="gallery-next-label">NEXT</span>
+      <img src="./img/arrow-outlined.svg" alt="" class="circle-arrow-icon">
     </button>
 
   </main>
