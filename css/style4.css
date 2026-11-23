@@ -13,8 +13,8 @@
   --line-weight: 0.174vw;
 
   /* 導覽列比例 */
-  --nav-pad-x: 4.63vw;          /* 80 / 1728 */
-  --logo-size: 4.05vw;          /* 70 / 1728 */
+  --nav-pad-x: 4.63vw;              /* 80 / 1728 */
+  --logo-size: min(4.05vw, 6.27vh); /* 70×70 等比鎖定，不碰觸黑面板圓角 */
 
   /* 4-1 / 4-2 底部背板圖比例 (Figma background_panel: x=80, y=85, w=1576, h=942) */
   --board-left: 4.63vw;         /* 80 / 1728 */
@@ -141,11 +141,10 @@ body {
   width: 75%;
 }
 
-/* 4-1 / 4-2 橘底階段：隱藏左上角 Logo（避免與黑面板重疊），選單原橘色兩條改為黑色、保留第三條白色 */
-body[data-stage="intro"] .nav-logo,
-body[data-stage="question"] .nav-logo {
-  visibility: hidden;
-  pointer-events: none;
+/* 4-1 / 4-2 橘底階段：左上角 Logo 與右上角選單原橘線改為黑色（保留第三條白線），清楚顯色不吃色 */
+body[data-stage="intro"] .nav-logo img,
+body[data-stage="question"] .nav-logo img {
+  filter: brightness(0);
 }
 
 body[data-stage="intro"] .bar-orange,

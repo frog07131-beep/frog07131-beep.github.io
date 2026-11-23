@@ -111,8 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. 讀取 URL 參數並初始化狀態（預設 TW -> CN 以對應 2-2-1 設計稿）
   // =========================================
   const params = new URLSearchParams(window.location.search);
-  const initialFrom = COUNTRIES[params.get('from')] ? params.get('from') : 'TW';
-  let initialTo = COUNTRIES[params.get('to')] ? params.get('to') : 'CN';
+  const rawFrom = (params.get('from') || '').toUpperCase();
+  const rawTo = (params.get('to') || '').toUpperCase();
+  const initialFrom = COUNTRIES[rawFrom] ? rawFrom : 'TW';
+  let initialTo = COUNTRIES[rawTo] ? rawTo : 'CN';
   if (initialFrom === initialTo) {
     initialTo = initialFrom === 'CN' ? 'TW' : 'CN';
   }
@@ -348,7 +350,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateUrlParams() {
     const nextUrl = `${window.location.pathname}?from=${encodeURIComponent(state.origin)}&to=${encodeURIComponent(state.dest)}`;
-    window.history.replaceState(null, '', nextUrl);
+    try {
+      window.history.replaceState(null, '', nextUrl);
+    } catch (_) {
+      // 避免部分瀏覽器在 file:// 本機協定下拋出 SecurityError
+    }
   }
 
   // =========================================

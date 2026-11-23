@@ -325,8 +325,16 @@ document.addEventListener('DOMContentLoaded', () => {
   optionsRow.addEventListener('click', (e) => {
     const card = e.target.closest('.option-card');
     if (!card) return;
-    state.answers[state.currentIndex] = card.dataset.optionKey;
-    renderQuestion(state.currentIndex);
+    const chosenKey = card.dataset.optionKey;
+    state.answers[state.currentIndex] = chosenKey;
+    clearHint();
+
+    // 原地切換選取狀態，避免重建 innerHTML 導致插頭圖片閃爍並保留 CSS 填滿過渡動畫
+    optionsRow.querySelectorAll('.option-card').forEach((btn) => {
+      const isSelected = btn.dataset.optionKey === chosenKey;
+      btn.classList.toggle('is-selected', isSelected);
+      btn.setAttribute('aria-checked', String(isSelected));
+    });
   });
 
   btnPrev.addEventListener('click', () => {
@@ -377,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const qParam = Number(params.get('q'));
   if (stageParam === 'loading') {
     startLoadingAndFinish();
-  } else if (qParam >= 1 && qParam <= QUESTIONS.length) {
+  } else if (Number.isInteger(qParam) && qParam >= 1 && qParam <= QUESTIONS.length) {
     state.currentIndex = qParam - 1;
     renderQuestion(state.currentIndex);
     showStage('question');

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '引腳數-2',
     '引腳中心距- 12.7毫米',
     '引腳寬度- 1.5毫米',
-    '引腳高度- 6.3-7.9 百萬英吋',
+    '引腳高度- 6.3-7.9 毫米',
     '引腳長度- 15.875-18.23毫米'
   ].join('\n');
 
@@ -25,16 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     B: {
       id: 'B',
-      serial: 'NEMA 1-15',
+      serial: 'NEMA 5-15',
       desc: '臺灣主要插頭，適配美墨及臺日等多國',
-      countries: '美國、墨西哥、加拿大、台灣、日本等',
+      countries: '美國、墨西哥、加拿大、臺灣、日本等',
       voltage: '100-127V',
       current: '15A',
       pins: [
         '引腳數-3／兩片扁腳尺寸同 A 型',
         '引腳中心距- 12.7毫米',
         '引腳寬度- 1.5毫米',
-        '引腳高度- 6.3-7.9 百萬英吋',
+        '引腳高度- 6.3-7.9 毫米',
         '引腳長度- 15.875-18.23毫米'
       ].join('\n'),
       socket: '無',
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
       voltage: '220–240V',
       current: '16A',
       pins: DEFAULT_PIN_INFO,
-      socket: 'Type - c',
+      socket: 'Type - C',
       appearance: '兩根圓腳，加上一半圓形接地腳',
       safety: '若將帶有接地的歐規 Type E/F 插頭插入這個笑臉插座，可以通電，但半圓形接地孔會空接，導致高功率電器失去接地保護。',
       photo: './img/plug-3d-K.png'
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
       desc: '南非主要插頭規格',
       countries: '印度、南非',
       voltage: '220–240V',
-      current: '16A',
+      current: '15A',
       pins: DEFAULT_PIN_INFO,
       socket: '無',
       appearance: '與 D 型一樣的佈局，但更粗大也更寬',
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type - C',
       appearance: '三根同等圓腳，下半部帶有絕緣套',
-      safety: '泰國特有規格。其插頭設計可以完美且安全地插入 Type-C 插頭。泰國牆面多為能同時插入 Type A、B、C、O 的多孔複合插座。'
+      safety: '泰國特有規格。其插座設計可以完美且安全地插入 Type-C 插頭。泰國牆面多為能同時插入 Type A、B、C、O 的多孔複合插座。'
     }
   };
 
@@ -222,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // 頂部與側邊選單
-  const navLogo = document.getElementById('nav-logo');
   const menuBtn = document.getElementById('menu-btn');
   const menuDrawer = document.getElementById('menu-drawer');
   const menuBackdrop = document.getElementById('menu-backdrop');
@@ -311,10 +310,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const nextUrl = `${window.location.pathname}?${params.toString()}`;
-    if (replace) {
-      window.history.replaceState({ ...state }, '', nextUrl);
-    } else {
-      window.history.pushState({ ...state }, '', nextUrl);
+    try {
+      if (replace) {
+        window.history.replaceState({ ...state }, '', nextUrl);
+      } else {
+        window.history.pushState({ ...state }, '', nextUrl);
+      }
+    } catch (_) {
+      // 避免部分瀏覽器在 file:// 本機協定下拋出 SecurityError 中斷視圖切換
     }
   }
 
@@ -525,9 +528,9 @@ document.addEventListener('DOMContentLoaded', () => {
       tab.setAttribute('aria-current', isActive ? 'true' : 'false');
     });
 
-    // 同頁切換規格時立即同步啟動 Sliding Pill，消除等待下一幀的延遲感
+    // 跨頁切入圖鑑時直接定位至目前規格，避免視窗縮放後返回出現滑動閃跳；同頁切換則滑動過渡
     if (viewChanged) {
-      requestAnimationFrame(() => updateSlidingPill(false));
+      requestAnimationFrame(() => updateSlidingPill(true));
     } else {
       updateSlidingPill(false);
     }
@@ -613,13 +616,13 @@ document.addEventListener('DOMContentLoaded', () => {
     detailDiagramImg.src = `./img/plug-type-${data.id}.png`;
     detailDiagramImg.alt = `TYPE-${data.id} 平面規格圖`;
 
-    // 優先使用專屬 3D 插圖 (plug-3d-X.png)，若該型號尚未提供則無縫退回線稿圖示
+    // 僅在該型號具備專屬 3D 插圖時載入 plug-3d-X.png，其餘直接使用平面規格圖避免 404
     const diagramFallback = `./img/plug-type-${data.id}.png`;
     detailPhotoImg.onerror = () => {
       detailPhotoImg.onerror = null;
       detailPhotoImg.src = diagramFallback;
     };
-    detailPhotoImg.src = data.photo || `./img/plug-3d-${data.id}.png`;
+    detailPhotoImg.src = data.photo || diagramFallback;
     detailPhotoImg.alt = `TYPE-${data.id} 實體示意圖`;
 
     detailCountries.textContent = data.countries;
