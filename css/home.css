@@ -322,6 +322,7 @@ body {
 }
 
 .hero-nav-link {
+  --hero-nav-opacity: 1;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -338,6 +339,24 @@ body {
   border-bottom: 1px solid transparent;
   white-space: nowrap;
   transition: border-color 0.2s ease, opacity 0.2s ease;
+  animation: heroNavSlideIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 首頁導覽選項逐項由左進場（Stagger）：起始 0.25s，每項間隔 0.28s */
+.hero-nav-link:nth-child(1) { animation-delay: 0.25s; }
+.hero-nav-link:nth-child(2) { animation-delay: 0.53s; }
+.hero-nav-link:nth-child(3) { animation-delay: 0.81s; }
+.hero-nav-link:nth-child(4) { animation-delay: 1.09s; }
+
+@keyframes heroNavSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-36px);
+  }
+  to {
+    opacity: var(--hero-nav-opacity, 1);
+    transform: translateX(0);
+  }
 }
 
 .hero-nav-link:hover,
@@ -348,6 +367,7 @@ body {
 }
 
 .hero-nav-link.is-coming-soon {
+  --hero-nav-opacity: 0.65;
   opacity: 0.65;
   cursor: default;
 }
@@ -365,10 +385,66 @@ body {
   width: min(13.0vw, 19.73vh);
   height: min(13.0vw, 19.73vh);
   display: block;
-  object-fit: contain;
+  overflow: visible;
   z-index: 2;
   pointer-events: none;
   user-select: none;
+}
+
+/* 四圓順時針循環位移（2×2 網格間距 39 單位：右上依序 下→左→上→右，其餘三圓同步順時針） */
+.hero-logo-piece {
+  will-change: transform;
+  animation-duration: 12s;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  animation-iteration-count: infinite;
+}
+
+.hero-logo-tl { animation-name: heroLogoOrbitTL; }
+.hero-logo-tr { animation-name: heroLogoOrbitTR; }
+.hero-logo-br { animation-name: heroLogoOrbitBR; }
+.hero-logo-bl { animation-name: heroLogoOrbitBL; }
+
+/* 左上：右 → 下 → 左 → 上 */
+@keyframes heroLogoOrbitTL {
+  0%        { transform: translate(0, 0); }
+  15%, 25%  { transform: translate(39px, 0); }
+  40%, 50%  { transform: translate(39px, 39px); }
+  65%, 75%  { transform: translate(0, 39px); }
+  90%, 100% { transform: translate(0, 0); }
+}
+
+/* 右上：下 → 左 → 上 → 右 */
+@keyframes heroLogoOrbitTR {
+  0%        { transform: translate(0, 0); }
+  15%, 25%  { transform: translate(0, 39px); }
+  40%, 50%  { transform: translate(-39px, 39px); }
+  65%, 75%  { transform: translate(-39px, 0); }
+  90%, 100% { transform: translate(0, 0); }
+}
+
+/* 右下：左 → 上 → 右 → 下 */
+@keyframes heroLogoOrbitBR {
+  0%        { transform: translate(0, 0); }
+  15%, 25%  { transform: translate(-39px, 0); }
+  40%, 50%  { transform: translate(-39px, -39px); }
+  65%, 75%  { transform: translate(0, -39px); }
+  90%, 100% { transform: translate(0, 0); }
+}
+
+/* 左下：上 → 右 → 下 → 左 */
+@keyframes heroLogoOrbitBL {
+  0%        { transform: translate(0, 0); }
+  15%, 25%  { transform: translate(0, -39px); }
+  40%, 50%  { transform: translate(39px, -39px); }
+  65%, 75%  { transform: translate(39px, 0); }
+  90%, 100% { transform: translate(0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-nav-link,
+  .hero-logo-piece {
+    animation: none;
+  }
 }
 
 /* 左下角橘底上的兩顆黑色圓點 (x1=13.38%, x2=25.39%, y=82.08%) */

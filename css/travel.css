@@ -31,7 +31,7 @@
   --option-h: 4.03vh;         /* 45 / 1117 */
 
   /* 水平寬度與間距比例 (vw & %) */
-  --top-left-w: 74.65%;       /* 上排左框寬 (1290 / 1728) */
+  --top-left-w: 79.40vw;      /* 上排左框寬：對齊中排查詢器右緣 (80 + 1292 = 1372 / 1728) */
   --mid-side-pad: 4.63vw;     /* 中排左右間隔 (80 / 1728) */
   --bot-left-w: 28.01%;       /* 下排左框寬 (484 / 1728) */
   --bot-right-w: 66.84%;      /* 下排右框寬 (1155 / 1728) */
@@ -78,12 +78,28 @@ body {
   justify-content: space-between;
 }
 
+.nav-left {
+  margin-top: 3.49vh; /* 39 / 1117，與右側 Menu 中心線齊平 */
+  display: flex;
+  align-items: center;
+  gap: 1.74vw;        /* 30 / 1728：讓標題左緣維持於 10.42vw (80 + 70 + 30) */
+}
+
 .nav-logo {
   display: block;
-  margin-top: 3.49vh; /* 39 / 1117 */
   width: var(--logo-size);
   height: var(--logo-size);
+  flex-shrink: 0;
   transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.main-title {
+  font-size: var(--font-36);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.6em;
+  color: var(--brand-orange);
+  white-space: nowrap;
 }
 
 .nav-logo:hover {
@@ -133,7 +149,7 @@ body {
 }
 
 /* =========================================
-4. 主視覺畫布與三排架構
+4. 主視覺畫布與雙排架構 (保留原上排佔位，中排與下排維持原位不動)
    ========================================= */
 .canvas {
   width: 100%;
@@ -144,56 +160,10 @@ body {
 .query-grid {
   width: 100%;
   height: var(--main-h);
+  padding-top: 24.22vh; /* 原上排 16.11vh + 原排間距 8.11vh，讓查詢列與使用說明維持原位不上移 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-/* =========================================
-5. 上排區塊
-   ========================================= */
-.row-top {
-  width: 100%;
-  height: var(--row-bar-h);
-  display: flex;
-  justify-content: space-between;
-}
-
-.box-title {
-  width: var(--top-left-w);
-  height: 100%;
-  border: var(--line-weight) solid var(--brand-orange);
-  border-left: none;
-  display: flex;
-  align-items: center;
-  padding-left: 10.42vw; /* 180 / 1728 (原 90w + 兩次右移共 90w) */
-  padding-top: var(--space-45-h);
-  padding-bottom: var(--space-45-h);
-}
-
-.main-title {
-  font-size: var(--font-36);
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: 0.6em;
-  color: var(--brand-orange);
-}
-
-.box-plane {
-  width: calc(100% - var(--top-left-w) - var(--space-90-w));
-  height: 100%;
-  border: var(--line-weight) solid var(--brand-orange);
-  border-right: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.box-plane img {
-  width: min(var(--icon-90), 8.06vh);
-  height: min(var(--icon-90), 8.06vh);
-  object-fit: contain;
-  display: block;
 }
 
 /* =========================================
@@ -202,8 +172,7 @@ body {
 .row-middle {
   width: 100%;
   height: var(--row-mid-h);
-  padding-left: var(--mid-side-pad);
-  padding-right: var(--mid-side-pad);
+  padding: 2.24vh var(--mid-side-pad); /* 上下各內縮 25h (25 / 1117)，查詢列實高 85h (7.61vh)，不影響上下排定位 */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -265,7 +234,7 @@ body {
 }
 
 .pill-sublabel {
-  font-size: var(--font-10);
+  font-size: var(--font-20);
   font-weight: 500;
   letter-spacing: 0.15em;
   color: var(--text-muted);
@@ -284,8 +253,9 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: min(var(--icon-90), 8.06vh);
-  height: min(var(--icon-90), 8.06vh);
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  width: auto;
   background: transparent;
   border: none;
   padding: 0;
@@ -412,6 +382,7 @@ body {
 .row-bottom {
   width: 100%;
   height: var(--row-bar-h);
+  padding: 2.24vh 0; /* 上下各內縮 25h (25 / 1117)，線框實高 130h (11.63vh)，不影響中排定位 */
   display: flex;
   justify-content: space-between;
   font-size: var(--font-20);

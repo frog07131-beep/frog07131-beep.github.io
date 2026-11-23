@@ -14,9 +14,12 @@
 
   <!-- ==================== 頂部導覽列 ==================== -->
   <header class="top-nav">
-    <a href="./index.html" class="nav-logo" aria-label="PLUG IN 首頁">
-      <img src="./img/button-logo.svg" alt="PLUG IN Logo">
-    </a>
+    <div class="nav-left">
+      <a href="./index.html" class="nav-logo" aria-label="PLUG IN 首頁">
+        <img src="./img/button-logo.svg" alt="PLUG IN Logo">
+      </a>
+      <h1 class="main-title">旅行查詢器</h1>
+    </div>
 
     <button type="button" id="menu-btn" class="nav-menu-btn" aria-label="開啟選單" aria-expanded="false">
       <span class="menu-bar bar-orange"></span>
@@ -67,20 +70,8 @@
 
   <!-- ==================== 主體內容 ==================== -->
   <main class="canvas">
-    <!-- 主視覺區塊：總高 676h (頂部總距 311h / 底間隔 130h) -->
+    <!-- 主視覺區塊 -->
     <section class="query-grid" aria-label="旅行查詢器">
-
-      <!-- 上排：高度 180h -->
-      <div class="row-top">
-        <!-- 左框：長 1290w -->
-        <div class="box-title">
-          <h1 class="main-title">旅 行<br>查 詢 器</h1>
-        </div>
-        <!-- 右框：自動填滿剩餘寬度，內含 90x90 飛機插圖 -->
-        <div class="box-plane">
-          <img src="./img/airplane.svg" alt="飛機圖示">
-        </div>
-      </div>
 
       <!-- 中排：高度 135h，左右內縮 80w -->
       <div class="row-middle">
