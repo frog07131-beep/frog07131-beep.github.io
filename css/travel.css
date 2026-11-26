@@ -5,7 +5,6 @@
   /* 色彩規範 */
   --bg-black: #000000;
   --brand-orange: #E5550D;
-  --pill-gray: #D9D9D9;
   --pure-white: #FFFFFF;
   --text-muted: #464444;
   --hover-gray: #BEBBBA;
@@ -61,7 +60,8 @@ body {
   min-height: 100vh;
   background-color: var(--bg-black);
   color: var(--brand-orange);
-  font-family: 'Noto Sans TC', sans-serif;
+  /* 全站字體：英數優先 Inter，中文自動銜接 Noto Sans TC */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   overflow-x: hidden;
 }
 
@@ -194,7 +194,7 @@ body {
   position: relative;
   width: 35.88vw; /* 620 / 1728 */
   height: 100%;
-  background-color: var(--pill-gray);
+  background-color: var(--pure-white); /* 膠囊底色改為純白 */
   border: var(--line-weight) solid var(--brand-orange);
   border-radius: 999px;
   transition: box-shadow 0.2s ease;
@@ -219,7 +219,7 @@ body {
 
 /* 未選取時顯示橘色佔位文字；選取後轉為黑色大字並顯示右側小標 */
 .pill-text {
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-32);
   font-weight: 500;
   letter-spacing: 0.6em;
@@ -283,7 +283,7 @@ body {
   border: var(--line-weight) solid var(--brand-orange);
   border-radius: 999px;
   color: var(--bg-black);
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-36);
   font-weight: 500;
   letter-spacing: 0.6em;
@@ -372,7 +372,7 @@ body {
 .option-item.disabled {
   opacity: 0.3;
   pointer-events: none;
-  background-color: var(--pill-gray);
+  background-color: var(--pure-white); /* 停用選項底色改為純白 */
   color: var(--bg-black);
 }
 
@@ -596,14 +596,21 @@ body {
   cursor: pointer;
 }
 
+/* 淺色底提示框：寬度、最小高度與圓角放大 1.5 倍，上下內距對齊 45h 並將標題與標籤推向兩端 */
 .m3-dialog-box {
   position: relative;
-  width: min(312px, calc(100vw - 48px));
-  padding: 24px;
-  border-radius: 28px;
-  background: #2f2521;
-  color: #f0dfd9;
-  font-family: 'Noto Sans TC', sans-serif;
+  width: min(468px, calc(100vw - 48px)); /* 312 × 1.5 */
+  min-height: 276px;                     /* 原高約 184 × 1.5 */
+  padding: var(--space-45-h) 36px;       /* 上下內距 45h (4.03vh)，左右維持 36px */
+  border-radius: 42px;                   /* 28 × 1.5 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--hover-gray);
+  --brand-orange: #E5550D;
+  color: var(--brand-orange);
+  /* 全站字體：英數優先 Inter，中文自動銜接 Noto Sans TC */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   transform: scale(0.9);
   transition: transform 0.2s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
@@ -634,7 +641,7 @@ body {
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #d8c2ba;
+  color: var(--hover-gray);
   font-size: 20px;
   cursor: pointer;
 }
@@ -643,29 +650,32 @@ body {
   background: rgba(216, 194, 186, 0.08);
 }
 
+/* 提示框內文：使用純白色提升灰底可讀性，移除上外距讓 flex space-between 對稱置中 */
 .m3-dialog-text {
-  margin: 16px 0 0;
+  margin: 0;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.25px;
-  color: #d8c2ba;
+  color: var(--pure-white);
 }
 
+/* 出發地與目的地標籤列：貼齊底距 45h，中間間隔至少 15h (15 / 1117 ≈ 1.34vh) */
 .m3-dialog-chips {
   display: flex;
-  gap: 8px;
-  margin-top: 16px;
+  gap: max(16px, 1.43vh);
+  margin: 0;
 }
 
+/* 出發地／目的地未選提示標籤：框線、文字與左側虛線圓點統一為品牌橘色 */
 .m3-dialog-chip {
   display: flex;
   align-items: center;
   gap: 6px;
   height: 32px;
   padding: 0 12px 0 8px;
-  border: 1px solid #ffb4ab;
+  border: 1px solid var(--brand-orange);
   border-radius: 8px;
-  color: #ffb4ab;
+  color: var(--brand-orange);
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.1px;

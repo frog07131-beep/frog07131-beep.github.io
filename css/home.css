@@ -35,7 +35,8 @@ body {
   min-height: 100vh;
   background-color: var(--brand-orange);
   color: var(--brand-orange);
-  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  /* 全站字體：英數優先 Inter，中文自動銜接 Noto Sans TC */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   overflow: hidden;
 }
 

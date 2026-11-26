@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type-B',
       appearance: '兩根平行的扁平金屬腳',
-      safety: '無接地設計。美規插頭通常有「極性」之分（一寬一窄，寬為零線）。使用時需注意電壓（110-120V），避免將電器誤插。'
+      safety: '無接地設計。美規插頭通常有「極性」之分（一寬一窄，寬為零線）。使用時需注意電壓（110-120V），避免將電器誤插。',
+      photo: './img/plug-3d-A.png'
     },
     B: {
       id: 'B',
@@ -39,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ].join('\n'),
       socket: '無',
       appearance: '兩根平行扁腳，加上柱狀的接地腳',
-      safety: '具備標準接地保護。其插頭可以插入 Type-B 的插座中。若電器本身帶有 Type-B 插頭，請勿硬塞進 Type A 插座，需使用轉接頭。'
+      safety: '具備標準接地保護。其插頭可以插入 Type-B 的插座中。若電器本身帶有 Type-B 插頭，請勿硬塞進 Type A 插座，需使用轉接頭。',
+      photo: './img/plug-3d-B.png'
     },
     C: {
       id: 'C',
@@ -51,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type-C、E、F',
       appearance: '兩根圓柱腳，本體多為扁平菱形',
-      safety: '全球最通用的規格。最大安全電流僅 2.5A，僅限手機充電器、雙層絕緣小家電使用，絕對不可用於吹風機或微波爐等高功率設備。'
+      safety: '全球最通用的規格。最大安全電流僅 2.5A，僅限手機充電器、雙層絕緣小家電使用，絕對不可用於吹風機或微波爐等高功率設備。',
+      photo: './img/plug-3d-C.png'
     },
     D: {
       id: 'D',
@@ -63,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: '無',
       appearance: '三根圓柱腳呈三角形排列，上方接地腳較粗',
-      safety: '屬於舊英式標準，與 Type-M 外觀雷同但互不相容，購買轉接頭時極易混淆，需特別核對實體大小。'
+      safety: '屬於舊英式標準，與 Type-M 外觀雷同但互不相容，購買轉接頭時極易混淆，需特別核對實體大小。',
+      photo: './img/plug-3d-D.png'
     },
     E: {
       id: 'E',
@@ -75,7 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type-E（E/F 混合插頭可兩用）',
       appearance: '兩圓柱腳，上有一孔，用來接凸出的接地柱',
-      safety: '需依賴插座上的接地柱才能完成接地。現代電器多配備「CEE 7/7」混合插頭，可同時相容 Type E 與 Type F。'
+      safety: '需依賴插座上的接地柱才能完成接地。現代電器多配備「CEE 7/7」混合插頭，可同時相容 Type E 與 Type F。',
+      photo: './img/plug-3d-E.png'
     },
     F: {
       id: 'F',
@@ -100,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: '無',
       appearance: '三根粗的矩形扁腳呈「品」字排列',
-      safety: '全球安全標準最高的設計。插頭內部強制內建保險絲（通常為 3A 或 13A），且插座配有安全防護門，需由較長的接地腳推開機關，火/零線孔才會開啟。'
+      safety: '全球安全標準最高的設計。插頭內部強制內建保險絲（通常為 3A 或 13A），且插座配有安全防護門，需由較長的接地腳推開機關，火/零線孔才會開啟。',
+      photo: './img/plug-3d-G.png'
     },
     H: {
       id: 'H',
@@ -112,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type - C',
       appearance: '三根腳呈倒三角排列',
-      safety: '特有規格。但其現代插座孔洞經過特殊設計（呈中心圓外擴扁槽狀），可直接完美相容無接地的 Type C 插頭。'
+      safety: '特有規格。但其現代插座孔洞經過特殊設計（呈中心圓外擴扁槽狀），可直接完美相容無接地的 Type C 插頭。',
+      photo: './img/plug-3d-H.png'
     },
     I: {
       id: 'I',
@@ -124,7 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: '無',
       appearance: '兩八字型扁腳，多數有一垂直接地腳',
-      safety: '中澳插座安裝方向相反（中國接地朝上，紐澳朝下）。在阿根廷使用時需注意，其火線與零線的接線極性與中澳完全相反，舊式精密設備需謹慎。'
+      safety: '中澳插座安裝方向相反（中國接地朝上，紐澳朝下）。在阿根廷使用時需注意，其火線與零線的接線極性與中澳完全相反，舊式精密設備需謹慎。',
+      photo: './img/plug-3d-I.png'
     },
     J: {
       id: 'J',
@@ -136,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type - C',
       appearance: '三根圓腳，中間的接地腳稍微偏移',
-      safety: '外觀與 Type-N 極度相似，但接地腳的偏移距離不同，互不相容。Type-C 插頭可安全插入 Type J 插座，但粗圓腳的歐規 Type-E/F 無法插入。'
+      safety: '外觀與 Type-N 極度相似，但接地腳的偏移距離不同，互不相容。Type-C 插頭可安全插入 Type J 插座，但粗圓腳的歐規 Type-E/F 無法插入。',
+      photo: './img/plug-3d-J.png'
     },
     K: {
       id: 'K',
@@ -161,7 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type - C',
       appearance: '三根圓腳呈「一」字型直線排列',
-      safety: '分為 10A 與 16A 兩種版本，兩者的腳互不相容。Type-C 可插入 10A 版本的插座。現代義大利已大量普及能同時相容 Type-L 與 Type-F 的「Bipasso」萬用插座。'
+      safety: '分為 10A 與 16A 兩種版本，兩者的腳互不相容。Type-C 可插入 10A 版本的插座。現代義大利已大量普及能同時相容 Type-L 與 Type-F 的「Bipasso」萬用插座。',
+      photo: './img/plug-3d-L.png'
     },
     M: {
       id: 'M',
@@ -173,7 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: '無',
       appearance: '與 D 型一樣的佈局，但更粗大也更寬',
-      safety: '專為大功率設計（最高 15A）。絕對無法與看起來相似的 Type-D 混用，強行硬塞會損壞牆面插座。'
+      safety: '專為大功率設計（最高 15A）。絕對無法與看起來相似的 Type-D 混用，強行硬塞會損壞牆面插座。',
+      photo: './img/plug-3d-M.png'
     },
     N: {
       id: 'N',
@@ -185,7 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type - C',
       appearance: '三圓腳呈扁平三角形，接地腳近中心',
-      safety: '分為 10A 與 20A 兩版（20A 腳位較粗）。Type-C 可相容 10A 插座。巴西是少數全國同時存在 127V 與 220V 電網的國家，插入 Type-N 插座前必須先確認當地牆壁電壓。'
+      safety: '分為 10A 與 20A 兩版（20A 腳位較粗）。Type-C 可相容 10A 插座。巴西是少數全國同時存在 127V 與 220V 電網的國家，插入 Type-N 插座前必須先確認當地牆壁電壓。',
+      photo: './img/plug-3d-N.png'
     },
     O: {
       id: 'O',
@@ -197,7 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pins: DEFAULT_PIN_INFO,
       socket: 'Type - C',
       appearance: '三根同等圓腳，下半部帶有絕緣套',
-      safety: '泰國特有規格。其插座設計可以完美且安全地插入 Type-C 插頭。泰國牆面多為能同時插入 Type A、B、C、O 的多孔複合插座。'
+      safety: '泰國特有規格。其插座設計可以完美且安全地插入 Type-C 插頭。泰國牆面多為能同時插入 Type A、B、C、O 的多孔複合插座。',
+      photo: './img/plug-3d-O.png'
     }
   };
 
@@ -624,13 +637,14 @@ document.addEventListener('DOMContentLoaded', () => {
     detailDiagramImg.src = `./img/plug-type-${data.id}.png`;
     detailDiagramImg.alt = `TYPE-${data.id} 平面規格圖`;
 
-    // 僅在該型號具備專屬 3D 插圖時載入 plug-3d-X.png，其餘直接使用平面規格圖避免 404
+    // 載入 A–O 各型號專屬 3D 插圖（保留平面規格圖 fallback 以防圖片載入失敗）
     const diagramFallback = `./img/plug-type-${data.id}.png`;
     detailPhotoImg.onerror = () => {
       detailPhotoImg.onerror = null;
       detailPhotoImg.src = diagramFallback;
     };
-    detailPhotoImg.src = data.photo || diagramFallback;
+    detailPhotoImg.dataset.plugType = data.id;
+    detailPhotoImg.src = data.photo || `./img/plug-3d-${data.id}.png`;
     detailPhotoImg.alt = `TYPE-${data.id} 實體示意圖`;
 
     detailCountries.textContent = data.countries;

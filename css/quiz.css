@@ -51,7 +51,8 @@ body {
   min-height: 100vh;
   background-color: var(--bg-black);
   color: var(--pure-white);
-  font-family: 'Noto Sans TC', sans-serif;
+  /* 全站字體：英數優先 Inter，中文自動銜接 Noto Sans TC */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   overflow-x: hidden;
 }
 
@@ -516,7 +517,7 @@ body[data-stage="question"] .bar-orange {
   padding: 0.6vh 1.4vw;
   border: var(--line-weight) solid var(--brand-orange);
   border-radius: 999px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-20);
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -853,7 +854,7 @@ body[data-stage="question"] .bar-orange {
 }
 
 .loading-title {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-40);
   font-weight: 700;
   letter-spacing: 0.55em;
@@ -886,7 +887,7 @@ body[data-stage="question"] .bar-orange {
 }
 
 .loading-percent {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-24);
   font-weight: 500;
   letter-spacing: 0.2em;
@@ -950,7 +951,7 @@ body[data-stage="question"] .bar-orange {
   display: flex;
   align-items: center;
   gap: 1.5vw;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-64);
   font-weight: 700;
   letter-spacing: 0.28em;
@@ -981,7 +982,7 @@ body[data-stage="question"] .bar-orange {
   height: 5vh;
   border-radius: 999px;
   border: var(--line-weight) solid var(--bg-black);
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-20);
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -1114,7 +1115,7 @@ body[data-stage="question"] .bar-orange {
   border: var(--line-weight) solid var(--bg-black);
   background-color: transparent;
   color: var(--bg-black);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
   font-size: var(--font-20);
   font-weight: 700;
   cursor: pointer;
