@@ -13,6 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSwap = document.getElementById('btn-swap');
   const searchBtn = document.getElementById('search-btn');
 
+  // 未選擇提示框元素
+  const missingDialog = document.getElementById('missing-dialog');
+  const missingText = document.getElementById('missing-text');
+  const missingChips = document.getElementById('missing-chips');
+  const missingClose = document.getElementById('missing-close');
+  const missingScrim = document.getElementById('missing-scrim');
+
   // 側邊選單元素
   const menuBtn = document.getElementById('menu-btn');
   const menuDrawer = document.getElementById('menu-drawer');
@@ -36,6 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     originPill.classList.toggle('has-value', Boolean(state.origin.value));
     destPill.classList.toggle('has-value', Boolean(state.dest.value));
+
+    // 選好之後，拿掉「沒選」的紅框
+    if (state.origin.value) originPill.classList.remove('is-missing');
+    if (state.dest.value) destPill.classList.remove('is-missing');
 
     document.querySelectorAll('#dest-list .option-item').forEach((item) => {
       const isConflict = state.origin.value !== '' && item.dataset.value === state.origin.value;
@@ -65,6 +76,42 @@ document.addEventListener('DOMContentLoaded', () => {
       targetDropdown.classList.add('open');
       targetPill.classList.add('active');
     }
+  }
+
+  // 開啟／關閉未選擇提示框：只列出還沒選的欄位
+  function openMissingDialog() {
+    const missing = [];
+    if (!state.origin.value) missing.push('出發地');
+    if (!state.dest.value) missing.push('目的地');
+
+    missingText.textContent = missing.length === 2
+      ? '選好出發地和目的地，就能查到需要的轉接頭。'
+      : `再選一個${missing[0]}，就能查到需要的轉接頭。`;
+    missingChips.innerHTML = missing
+      .map((name) => `<span class="m3-dialog-chip">${name}</span>`)
+      .join('');
+
+    missingDialog.classList.add('open');
+    missingDialog.setAttribute('aria-hidden', 'false');
+    missingClose.focus();
+  }
+
+  function closeMissingDialog() {
+    if (!missingDialog.classList.contains('open')) return;
+    missingDialog.classList.remove('open');
+    missingDialog.setAttribute('aria-hidden', 'true');
+
+    // 提示框關掉後，讓沒選的那一格亮框並抖一下
+    [
+      [state.origin.value, originPill],
+      [state.dest.value, destPill]
+    ].forEach(([value, pill]) => {
+      if (value) return;
+      pill.classList.add('is-missing');
+      pill.classList.remove('is-shaking');
+      void pill.offsetWidth; // 重新觸發動畫
+      pill.classList.add('is-shaking');
+    });
   }
 
   function setDrawerOpen(open) {
@@ -124,12 +171,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchBtn.addEventListener('click', () => {
     if (!state.origin.value || !state.dest.value) {
-      alert('請先選擇出發地與目的地！');
+      openMissingDialog();
       return;
     }
 
     const targetUrl = `./search.html?from=${encodeURIComponent(state.origin.value)}&to=${encodeURIComponent(state.dest.value)}`;
     window.location.href = targetUrl;
+  });
+
+  missingClose.addEventListener('click', closeMissingDialog);
+  missingScrim.addEventListener('click', closeMissingDialog);
+
+  [originPill, destPill].forEach((pill) => {
+    pill.addEventListener('animationend', () => pill.classList.remove('is-shaking'));
   });
 
   menuBtn.addEventListener('click', () => setDrawerOpen(true));
@@ -146,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       closeAllMenus();
       setDrawerOpen(false);
+      closeMissingDialog();
     }
   });
 

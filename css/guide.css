@@ -275,6 +275,13 @@ body[data-view="detail"] .bar-primary {
   padding-left: 8px;
 }
 
+/* 目前所在頁面：選單文字變橘色（地圖／圖鑑依 body 的 data-view 判斷） */
+body[data-view="map"] .menu-nav-list a[data-nav-view="map"],
+body[data-view="gallery"] .menu-nav-list a[data-nav-view="gallery"],
+body[data-view="detail"] .menu-nav-list a[data-nav-view="gallery"] {
+  color: var(--brand-orange);
+}
+
 .menu-nav-arrow {
   width: 22px;
   height: 22px;

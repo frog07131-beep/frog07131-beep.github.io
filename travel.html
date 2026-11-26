@@ -47,7 +47,7 @@
           </a>
         </li>
         <li>
-          <a href="./travel.html">
+          <a href="./travel.html" class="is-current" aria-current="page">
             <span>旅行查詢器</span>
             <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
           </a>
@@ -178,6 +178,19 @@
   </main>
 
   <!-- 原生 JavaScript 互動控制 -->
+  <!-- ==================== 未選擇提示框（M3 dialog） ==================== -->
+  <div class="m3-dialog" id="missing-dialog" aria-hidden="true">
+    <div class="m3-dialog-scrim" id="missing-scrim"></div>
+    <div class="m3-dialog-box" role="alertdialog" aria-modal="true" aria-labelledby="missing-title" aria-describedby="missing-text">
+      <div class="m3-dialog-top">
+        <h2 class="m3-dialog-title" id="missing-title">還差一步</h2>
+        <button type="button" class="m3-dialog-close" id="missing-close" aria-label="關閉">✕</button>
+      </div>
+      <p class="m3-dialog-text" id="missing-text">選好出發地和目的地，就能查到需要的轉接頭。</p>
+      <div class="m3-dialog-chips" id="missing-chips"></div>
+    </div>
+  </div>
+
   <script src="./js/script.js"></script>
 </body>
 </html>

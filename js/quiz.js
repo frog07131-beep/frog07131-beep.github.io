@@ -121,6 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnPrevLabel = document.getElementById('btn-prev-label');
   const btnNext = document.getElementById('btn-next');
   const btnNextLabel = document.getElementById('btn-next-label');
+  const quizFeedback = document.getElementById('quiz-feedback');
+  const feedbackVerdict = document.getElementById('feedback-verdict');
+  const feedbackAnswer = document.getElementById('feedback-answer');
+  const feedbackExplain = document.getElementById('feedback-explain');
 
   // 4-3 加載中
   const loadingBarFill = document.getElementById('loading-bar-fill');
@@ -130,7 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultScorePill = document.getElementById('result-score-pill');
   const resultGradeLetters = document.getElementById('result-grade-letters');
   const resultSubhead = document.getElementById('result-subhead');
-  const reviewList = document.getElementById('review-list');
+  const resultDetail = document.getElementById('result-detail');
+  let detailCards = [];
+  const resultDots = document.getElementById('result-dots');
   const btnPlayAgain = document.getElementById('btn-playagain');
 
   // =========================================
@@ -153,14 +159,80 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
+  let hintTimer = null;
+  let nudgeTimer = null;
+
   function showHint(message) {
     quizHint.textContent = message;
     quizHint.classList.add('is-visible');
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(clearHint, 2500);
   }
 
   function clearHint() {
+    clearTimeout(hintTimer);
     quizHint.textContent = '';
     quizHint.classList.remove('is-visible');
+  }
+
+  // 還沒選答案時 NEXT 變淡
+  function updateNextLock() {
+    const locked = !state.answers[state.currentIndex];
+    btnNext.classList.toggle('is-locked', locked);
+    btnNext.setAttribute('aria-disabled', String(locked));
+  }
+
+  // 沒選就按 NEXT：選項晃一下
+  function nudgeOptions() {
+    optionsRow.classList.remove('needs-answer');
+    void optionsRow.offsetWidth; // 重新觸發動畫
+    optionsRow.classList.add('needs-answer');
+    clearTimeout(nudgeTimer);
+    nudgeTimer = setTimeout(() => optionsRow.classList.remove('needs-answer'), 700);
+  }
+
+  // 選完答案：鎖住選項、標出正確答案，並在右下顯示解析
+  function optionLabel(q, key) {
+    const opt = q.options.find((o) => o.key === key);
+    return opt ? `${key}・${opt.label}` : key;
+  }
+
+  let revealTimer = null; // 保留給 renderQuestion / hideAnswerResult 清除用
+
+  const CHECK_SVG = '<svg class="answer-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 7" pathLength="1"/></svg>';
+
+  // animate = true：剛作答且答對時，正確選項右上角的勾勾會一筆畫出來
+  function showAnswerResult(index, animate = false) {
+    const q = QUESTIONS[index];
+    const chosenKey = state.answers[index];
+    const isCorrect = chosenKey === q.correct;
+
+    clearTimeout(revealTimer);
+    optionsRow.classList.add('is-answered');
+    optionsRow.querySelectorAll('.option-card').forEach((btn) => {
+      const key = btn.dataset.optionKey;
+      const isAnswer = key === q.correct;
+      btn.classList.toggle('is-selected', isAnswer);
+      if (isAnswer && !btn.querySelector('.answer-check')) {
+        btn.insertAdjacentHTML('beforeend', CHECK_SVG);
+      }
+      btn.classList.toggle('draw-check', isAnswer && animate && isCorrect);
+      btn.classList.toggle('is-wrong', key === chosenKey && !isCorrect);
+      btn.setAttribute('aria-checked', String(key === chosenKey));
+      btn.setAttribute('aria-disabled', 'true');
+    });
+
+    feedbackVerdict.textContent = isCorrect ? '✓ 答對' : '✕ 答錯';
+    feedbackVerdict.classList.toggle('is-wrong', !isCorrect);
+    feedbackAnswer.textContent = `正確答案　${optionLabel(q, q.correct)}`;
+    feedbackExplain.textContent = q.explanation;
+    quizFeedback.classList.add('is-visible');
+  }
+
+  function hideAnswerResult() {
+    clearTimeout(revealTimer);
+    optionsRow.classList.remove('is-answered');
+    quizFeedback.classList.remove('is-visible');
   }
 
   // =========================================
@@ -216,6 +288,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const isLast = index === QUESTIONS.length - 1;
     btnNextLabel.textContent = isLast ? 'END' : 'NEXT';
     btnNext.setAttribute('aria-label', isLast ? '完成測驗並查看結果' : '前往下一題');
+    updateNextLock();
+
+    // 回到已作答的題目時，直接顯示當時的對錯與解析（不再閃框）
+    clearTimeout(revealTimer);
+    if (selectedKey) {
+      showAnswerResult(index);
+    } else {
+      hideAnswerResult();
+    }
   }
 
   // =========================================
@@ -281,24 +362,51 @@ document.addEventListener('DOMContentLoaded', () => {
     resultGradeLetters.innerHTML = buildGradeVisual(grade);
     resultSubhead.textContent = subhead;
 
-    reviewList.innerHTML = QUESTIONS.map((q, idx) => {
+    // 每一題做成一張解析卡片，圈圈只負責切換
+    detailCards = QUESTIONS.map((q, idx) => {
       const userKey = state.answers[idx];
       const isCorrect = userKey === q.correct;
-      const userOpt = q.options.find((o) => o.key === userKey);
-      const correctOpt = q.options.find((o) => o.key === q.correct);
+      const answerTile = (key, role) => {
+        const opt = q.options.find((o) => o.key === key);
+        const label = role === 'mine' ? '你選' : '正確';
+        if (!opt) return `<div class="tip-tile is-${role}"><span class="tip-tile-label">${label}</span><span class="tip-tile-name">未作答</span></div>`;
+        const visual = opt.img ? `<img src="${opt.img}" alt="" class="tip-tile-img">` : '';
+        return `
+          <div class="tip-tile is-${role}">
+            <span class="tip-tile-label">${label}</span>
+            ${visual}
+            <span class="tip-tile-name">${key}・${opt.label}</span>
+          </div>`;
+      };
+      const tiles = isCorrect
+        ? answerTile(userKey, 'right')
+        : answerTile(userKey, 'mine') + '<span class="tip-arrow" aria-hidden="true">→</span>' + answerTile(q.correct, 'right');
+      const questionImg = q.questionImg ? `<img src="${q.questionImg}" alt="" class="tip-q-img">` : '';
       return `
-        <li class="review-item ${isCorrect ? 'is-correct' : ''}">
-          <div class="review-head">
-            <span>第 ${q.id} 題：${q.question}</span>
-            <span class="review-tag ${isCorrect ? 'ok' : 'wrong'}">${isCorrect ? '答對' : '答錯'}</span>
+        <div class="detail-card ${isCorrect ? 'is-correct' : 'is-wrong'}">
+          <div class="detail-text">
+            <div class="dot-tip-title">第 ${q.id} 題　<b>${isCorrect ? '✓ 答對' : '✕ 答錯'}</b></div>
+            <div class="dot-tip-q">${questionImg}<span>${q.question}</span></div>
+            <p class="dot-tip-explain">${q.explanation}</p>
           </div>
-          <p class="review-detail">
-            你的作答：${userKey ? `${userKey}（${userOpt ? userOpt.label : ''}）` : '未作答'}　｜　正確答案：${q.correct}（${correctOpt ? correctOpt.label : ''}）<br>
-            解析：${q.explanation}
-          </p>
-        </li>
+          <div class="tip-tiles">${tiles}</div>
+        </div>`;
+    });
+
+    // 7 個圈圈：答對實心、答錯空心
+    resultDots.innerHTML = QUESTIONS.map((q, idx) => {
+      const isCorrect = state.answers[idx] === q.correct;
+      return `
+        <button type="button" class="result-dot ${isCorrect ? 'is-correct' : 'is-wrong'}"
+          data-index="${idx}" aria-label="第 ${q.id} 題，${isCorrect ? '答對' : '答錯'}" aria-controls="result-detail">
+          <span class="dot-num">${q.id}</span>
+        </button>
       `;
     }).join('');
+
+    // 預設先顯示第一題答錯的；全對就顯示第 1 題
+    const firstWrong = QUESTIONS.findIndex((q, idx) => state.answers[idx] !== q.correct);
+    showDetail(firstWrong === -1 ? 0 : firstWrong);
 
     showStage('result');
   }
@@ -325,16 +433,15 @@ document.addEventListener('DOMContentLoaded', () => {
   optionsRow.addEventListener('click', (e) => {
     const card = e.target.closest('.option-card');
     if (!card) return;
+    // 每題只能作答一次，選了就鎖住
+    if (state.answers[state.currentIndex]) return;
     const chosenKey = card.dataset.optionKey;
     state.answers[state.currentIndex] = chosenKey;
     clearHint();
 
-    // 原地切換選取狀態，避免重建 innerHTML 導致插頭圖片閃爍並保留 CSS 填滿過渡動畫
-    optionsRow.querySelectorAll('.option-card').forEach((btn) => {
-      const isSelected = btn.dataset.optionKey === chosenKey;
-      btn.classList.toggle('is-selected', isSelected);
-      btn.setAttribute('aria-checked', String(isSelected));
-    });
+    optionsRow.classList.remove('needs-answer');
+    showAnswerResult(state.currentIndex, true);
+    updateNextLock();
   });
 
   btnPrev.addEventListener('click', () => {
@@ -348,7 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btnNext.addEventListener('click', () => {
     if (!state.answers[state.currentIndex]) {
-      showHint('請先選擇一個答案再繼續！');
+      showHint('先選一個答案');
+      nudgeOptions();
       return;
     }
 
@@ -361,6 +469,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   btnPlayAgain.addEventListener('click', resetQuiz);
+
+  // 滑過、鍵盤移到、或點一下圈圈（手機），下方解析卡片就換成那一題
+  function showDetail(idx) {
+    if (!detailCards[idx]) return;
+    resultDetail.innerHTML = detailCards[idx];
+    resultDots.querySelectorAll('.result-dot').forEach((d) => {
+      const active = Number(d.dataset.index) === idx;
+      d.classList.toggle('is-active', active);
+      d.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  ['mouseover', 'focusin', 'click'].forEach((type) => {
+    resultDots.addEventListener(type, (e) => {
+      const dot = e.target.closest('.result-dot');
+      if (dot && !dot.classList.contains('is-active')) showDetail(Number(dot.dataset.index));
+    });
+  });
 
   // 側邊選單開關
   function setDrawerOpen(open) {

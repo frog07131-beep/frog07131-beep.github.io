@@ -23,9 +23,11 @@
 
   <!-- ==================== 頂部導覽列 (與 guide / travel / search 一致) ==================== -->
   <header class="top-nav">
+    <!-- 遊戲中不放 logo（之後要放回來，把這段註解拿掉即可）
     <a href="./index.html" class="nav-logo" aria-label="返回 PLUG IN 首頁">
       <img src="./img/button-logo.svg" alt="PLUG IN Logo">
     </a>
+    -->
 
     <button type="button" id="menu-btn" class="nav-menu-btn" aria-label="開啟選單" aria-expanded="false">
       <span class="menu-bar bar-orange"></span>
@@ -65,7 +67,7 @@
           </a>
         </li>
         <li>
-          <a href="./quiz.html">
+          <a href="./quiz.html" class="is-current" aria-current="page">
             <span>用電安全隨堂考</span>
             <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
           </a>
@@ -162,7 +164,16 @@
       <section class="options-row" id="options-row" role="radiogroup" aria-label="題目選項"></section>
 
       <!-- 未選取提醒訊息 -->
-      <p class="quiz-hint" id="quiz-hint" role="alert" aria-live="polite"></p>
+      <p class="quiz-hint" id="quiz-hint" aria-live="polite"></p>
+
+      <!-- 選完答案後立即顯示：答對／答錯 + 正確答案 + 簡答解析 -->
+      <section class="quiz-feedback" id="quiz-feedback" aria-live="polite">
+        <div class="feedback-head">
+          <span class="feedback-verdict" id="feedback-verdict">答對</span>
+          <span class="feedback-answer" id="feedback-answer"></span>
+        </div>
+        <p class="feedback-explain" id="feedback-explain"></p>
+      </section>
 
       <!-- 左下切角導覽按鈕 (button: x=214, y=914, w=359, 兩顆 118×118 圓鈕) -->
       <div class="question-nav-buttons">
@@ -214,16 +225,17 @@
         <div class="result-grade-letters" id="result-grade-letters" aria-label="測驗等級"></div>
         <p class="result-subhead" id="result-subhead"></p>
 
+        <!-- 7 個圈圈：滑過或點一下，看那一題答對還是答錯、錯在哪 -->
+        <div class="result-dots" id="result-dots" aria-label="各題作答結果"></div>
+
         <div class="result-actions">
           <button type="button" class="result-btn btn-playagain" id="btn-playagain">再玩一次</button>
           <a href="./guide.html?view=gallery&spec=all&page=1" class="result-btn btn-backhome">回到圖鑑</a>
         </div>
       </div>
 
-      <section class="result-review" aria-label="答題解析">
-        <h3>作答回顧與解析</h3>
-        <ul class="review-list" id="review-list"></ul>
-      </section>
+      <!-- 解析卡片：滑過或點選上方圈圈，就換成那一題 -->
+      <section class="result-detail" id="result-detail" aria-live="polite" aria-label="單題解析"></section>
     </div>
   </main>
 

@@ -525,6 +525,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.58vw; /* 10 / 1728：兩個標籤之間至少留一點空隙 */
 }
 
 .tag-pill {
@@ -534,25 +535,28 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 500;
+  line-height: 1; /* 文字高度不超出外框 */
   white-space: nowrap;
 }
 
 .tag-outline {
-  width: 5.15vw; /* 89 / 1728 */
+  min-width: 5.15vw; /* 89 / 1728 */
+  padding-right: 0.46vw;
+  padding-left: calc(0.46vw + 0.1em);
   border: var(--line-weight) solid var(--brand-orange);
   color: var(--brand-orange);
-  font-size: var(--font-20);
+  font-size: calc(var(--font-20) * 0.85); /* 讓字完整收在外框裡 */
   letter-spacing: 0.1em;
-  padding-left: 0.1em;
 }
 
 .tag-filled {
-  width: 5.21vw; /* 90 / 1728 */
+  min-width: 5.21vw; /* 90 / 1728 */
+  padding-right: 0.46vw;
+  padding-left: calc(0.46vw + 0.1em);
   background-color: var(--brand-orange);
   color: var(--bg-black);
   font-size: var(--font-14);
   letter-spacing: 0.1em;
-  padding-left: 0.1em;
 }
 
 .tag-filled.tag-safe {
@@ -563,18 +567,18 @@ body {
 .spec-row {
   width: 100%;
   height: 4.03vh; /* 45 / 1117 */
-  display: flex;
+  display: grid; /* 左值｜箭頭｜右值，三欄各自佔位，不會疊在一起 */
+  grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
   align-items: center;
-  justify-content: space-between;
+  column-gap: 0.58vw; /* 10 / 1728 */
 }
 
 .spec-val {
-  width: 5.15vw; /* 89 / 1728 */
   text-align: center;
   font-size: var(--font-20);
   font-weight: 500;
-  letter-spacing: 0.2em;
-  padding-left: 0.2em;
+  letter-spacing: 0.12em; /* 原本 0.2em，「50/60Hz」會撐爆欄位 */
+  padding-left: 0.12em;
   color: var(--bg-black);
   white-space: nowrap;
 }
@@ -773,6 +777,11 @@ body {
 .menu-nav-list a:hover {
   color: var(--brand-orange);
   padding-left: 8px;
+}
+
+/* 目前所在頁面：選單文字變橘色 */
+.menu-nav-list a.is-current {
+  color: var(--brand-orange);
 }
 
 .menu-nav-arrow {

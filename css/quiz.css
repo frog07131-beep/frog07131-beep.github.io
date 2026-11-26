@@ -77,7 +77,7 @@ body {
   padding: 0 var(--nav-pad-x);
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end; /* 遊戲頁沒有 logo，選單按鈕維持在右邊 */
   z-index: 120;
   pointer-events: none;
 }
@@ -264,6 +264,11 @@ body[data-stage="question"] .bar-orange {
 .menu-nav-list a:hover {
   color: var(--brand-orange);
   padding-left: 8px;
+}
+
+/* 目前所在頁面：選單文字變橘色 */
+.menu-nav-list a.is-current {
+  color: var(--brand-orange);
 }
 
 .menu-nav-arrow {
@@ -675,25 +680,60 @@ body[data-stage="question"] .bar-orange {
 }
 
 /* 提示訊息 */
+/* 放在 NEXT 右邊的橘底上，只用一行黑字，不再用膠囊框 */
 .quiz-hint {
   position: absolute;
-  left: 17.59vw;
-  top: 72vh;
-  z-index: 3;
+  left: calc(12.38vw + 20.78vw + 1.6vw); /* 導覽圓鈕右邊 */
+  top: calc(81.83vh + var(--circle-btn-size) / 2);
+  z-index: 5;
+  margin: 0;
   font-size: var(--font-20);
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--bg-black);
-  background-color: var(--brand-orange);
-  padding: 0.7vh 1.6vw;
-  border-radius: 999px;
+  white-space: nowrap;
   opacity: 0;
+  transform: translate(-0.6vw, -50%);
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .quiz-hint.is-visible {
   opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* 還沒選答案：NEXT 變淡，看起來還不能按 */
+.quiz-circle-btn.btn-next.is-locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.quiz-circle-btn.btn-next.is-locked:hover {
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+  transform: none;
+}
+
+.quiz-circle-btn.btn-next.is-locked:hover .circle-btn-icon {
+  filter: invert(41%) sepia(93%) saturate(2258%) hue-rotate(4deg) brightness(95%) contrast(94%);
+}
+
+/* 沒選就按 NEXT：選項輕輕晃一下、外框亮起來，提醒要先選 */
+.options-row.needs-answer .option-card {
+  border-color: var(--brand-orange);
+  animation: quizNudge 0.45s ease;
+}
+
+@keyframes quizNudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .options-row.needs-answer .option-card { animation: none; }
 }
 
 /* 左下導覽雙圓鈕 (button: x=214, y=914, w=359, 兩顆 118×118，位於左下橘底區) */
@@ -974,64 +1014,375 @@ body[data-stage="question"] .bar-orange {
   color: var(--pure-white);
 }
 
-.result-review h3 {
-  font-size: var(--font-32);
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  color: var(--brand-orange);
-  margin-bottom: 2.5vh;
+
+
+/* ==================== 選完答案：立即顯示對錯與解析 ==================== */
+/* 作答後選項鎖住：不再有 hover 框 */
+.options-row.is-answered .option-card {
+  cursor: default;
 }
 
-.review-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 1.8vh;
+.options-row.is-answered .option-card:not(.is-selected):hover {
+  border-color: transparent;
 }
 
-.review-item {
-  padding: 2.2vh 2.4vw;
-  border: var(--line-weight) solid rgba(229, 85, 13, 0.55);
-  border-radius: 1.4vw;
-  background-color: #111111;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9vh;
-}
-
-.review-item.is-correct {
+/* 選錯的那張：留橘框、變淡，正確答案則是實心橘底 */
+.options-row.is-answered .option-card.is-wrong,
+.options-row.is-answered .option-card.is-wrong:hover {
   border-color: var(--brand-orange);
+  opacity: 0.45;
 }
 
-.review-head {
+/* 放在黑色面板右下的空白處 */
+.quiz-feedback {
+  position: absolute;
+  left: 47vw;
+  top: 70vh;
+  width: 38vw;
+  z-index: 4;
+  color: var(--brand-orange);
+  opacity: 0;
+  transform: translateY(1.2vh);
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.05, 0.7, 0.1, 1), transform 0.35s cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+.quiz-feedback.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.feedback-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 2vw;
-  font-size: var(--font-20);
-  font-weight: 500;
+  gap: 1.4vw;
+  margin-bottom: 1.4vh;
 }
 
-.review-tag {
-  padding: 0.35vh 1vw;
+.feedback-verdict {
+  padding: 0.5vh 1.4vw;
+  border: var(--line-weight) solid var(--brand-orange);
   border-radius: 999px;
-  font-size: var(--font-16);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.review-tag.ok {
   background-color: var(--brand-orange);
   color: var(--bg-black);
+  font-size: var(--font-20);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding-left: calc(1.4vw + 0.2em);
+  line-height: 1.3;
 }
 
-.review-tag.wrong {
+.feedback-verdict.is-wrong {
+  /* 答錯：灰底白字，跟下方作答回顧的「答錯」標籤一致 */
+  background-color: var(--text-muted);
+  border-color: var(--text-muted);
+  color: var(--pure-white);
+}
+
+.feedback-answer {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-20);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.feedback-explain {
+  margin: 0;
+  font-size: var(--font-16);
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  color: var(--card-gray);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-feedback { transform: none; }
+}
+
+/* ==================== 結算頁：7 個圈圈 ==================== */
+.result-dots {
+  display: flex;
+  align-items: center;
+  gap: 1.2vw;
+}
+
+.result-dot {
+  position: relative;
+  width: min(3.6vw, 5.6vh);
+  height: min(3.6vw, 5.6vh);
+  padding: 0;
+  border-radius: 50%;
+  border: var(--line-weight) solid var(--bg-black);
+  background-color: transparent;
+  color: var(--bg-black);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--font-20);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* 答對：實心黑；答錯：空心 */
+.result-dot.is-correct {
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+}
+
+.result-dot:hover,
+.result-dot:focus-visible {
+  transform: translateY(-0.4vh);
+  outline: none;
+}
+
+/* 目前顯示在下方卡片的那一題：外圈多一道黑環 */
+.result-dot.is-active {
+  box-shadow: 0 0 0 0.3vw var(--brand-orange), 0 0 0 0.5vw var(--bg-black);
+}
+
+.dot-tip-title {
+  color: var(--brand-orange);
+  font-size: var(--font-20);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.dot-tip-title b {
+  font-weight: 700;
+}
+
+.detail-card.is-wrong .dot-tip-title b {
+  padding: 0.1vh 0.6vw;
+  border-radius: 999px;
   background-color: var(--text-muted);
   color: var(--pure-white);
 }
 
-.review-detail {
-  font-size: var(--font-16);
-  line-height: 1.65;
+.dot-tip-q {
+  color: var(--pure-white);
+}
+
+.dot-tip-row {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+}
+
+.dot-tip-explain {
+  margin-top: 0.4vh;
+  padding-top: 0.8vh;
+  border-top: 1px solid #333333;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-dot:hover,
+  .result-dot:focus-visible { transform: none; }
+}
+
+/* 選錯的選項卡右上角標一個 ✕ */
+.options-row.is-answered .option-card.is-wrong::after {
+  content: '✕';
+  position: absolute;
+  top: 1.4vh;
+  right: 1.2vw;
+  color: var(--brand-orange);
+  font-size: var(--font-24);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 正確答案右上角的勾勾（SVG 線條） */
+.answer-check {
+  position: absolute;
+  top: 1.2vh;
+  right: 1vw;
+  width: 1.9vw;
+  height: 1.9vw;
+  fill: none;
+  stroke: var(--bg-black);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* 答對的瞬間：勾勾一筆畫出來 */
+.option-card.draw-check .answer-check {
+  stroke-dashoffset: 1;
+  animation: drawCheck 0.5s cubic-bezier(0.05, 0.7, 0.1, 1) 0.15s forwards;
+}
+
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option-card.draw-check .answer-check {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}
+
+/* ==================== 結算圈圈的解析卡片內容 ==================== */
+.detail-card.is-correct .dot-tip-title b {
+  padding: 0.1vh 0.6vw;
+  border-radius: 999px;
+  background-color: var(--brand-orange);
+  color: var(--bg-black);
+}
+
+.dot-tip-q {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+}
+
+.tip-q-img {
+  width: 3.2vw;
+  min-width: 44px;
+  height: auto;
+  flex-shrink: 0;
+  filter: url(#quiz-orange-tint);
+}
+
+.tip-tiles {
+  display: flex;
+  align-items: stretch;
+  gap: 0.8vw;
+  margin-top: 0.6vh;
+}
+
+.tip-tile {
+  flex: 1;
+  min-width: 0;
+  padding: 1.2vh 0.8vw;
+  border: 1px solid #333333;
+  border-radius: 0.8vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8vh;
+  text-align: center;
+}
+
+.tip-tile.is-mine {
+  opacity: 0.6;
+}
+
+.tip-tile.is-right {
+  border-color: var(--brand-orange);
+}
+
+.tip-tile-label {
+  align-self: flex-start;
+  font-size: max(12px, 0.75vw);
   color: var(--card-gray);
+  letter-spacing: 0.1em;
+}
+
+.tip-tile.is-right .tip-tile-label {
+  color: var(--brand-orange);
+}
+
+.tip-tile-img {
+  width: 4.2vw;
+  min-width: 56px;
+  height: auto;
+  filter: url(#quiz-orange-tint);
+}
+
+.tip-tile-name {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-16);
+  color: var(--pure-white);
+  line-height: 1.4;
+}
+
+.tip-arrow {
+  align-self: center;
+  color: var(--brand-orange);
+  font-size: var(--font-20);
+}
+
+/* ==================== 結算頁：解析卡片（取代原本的作答回顧列表） ==================== */
+.result-detail {
+  min-height: 30vh;
+}
+
+.detail-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4vw;
+  padding: 4.5vh 4vw;
+  border: var(--line-weight) solid var(--brand-orange);
+  border-radius: var(--board-radius);
+  background-color: #111111;
+  color: var(--card-gray);
+  animation: detailIn 0.3s cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+.detail-card.is-wrong {
+  border-color: rgba(229, 85, 13, 0.55);
+}
+
+@keyframes detailIn {
+  from { opacity: 0; transform: translateY(1vh); }
+}
+
+.detail-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.detail-card .dot-tip-title {
+  font-size: var(--font-24);
+}
+
+.detail-card .dot-tip-q {
+  font-size: var(--font-24);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--pure-white);
+}
+
+.detail-card .dot-tip-explain {
+  margin: 0;
+  padding-top: 2vh;
+  border-top: 1px solid #333333;
+  font-size: var(--font-20);
+  line-height: 1.8;
+}
+
+.detail-card .tip-tiles {
+  margin: 0;
+  gap: 1.2vw;
+}
+
+.detail-card .tip-tile {
+  width: 12vw;
+  min-width: 150px;
+  flex: none;
+  padding: 2.4vh 1.2vw;
+  border-radius: 1.2vw;
+  gap: 1.6vh;
+}
+
+.detail-card .tip-tile-label {
+  font-size: var(--font-16);
+}
+
+.detail-card .tip-tile-img {
+  width: 6.5vw;
+  min-width: 72px;
+}
+
+.detail-card .tip-tile-name {
+  font-size: var(--font-20);
+}
+
+.detail-card .tip-q-img {
+  width: 4.5vw;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail-card { animation: none; }
 }
