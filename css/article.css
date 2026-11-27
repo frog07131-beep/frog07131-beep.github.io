@@ -1,0 +1,728 @@
+/* =========================================
+1. 浮動比例變數 (完全對齊全站 Figma 1728 × 1117 基準)
+   ========================================= */
+:root {
+  /* 色彩規範 */
+  --bg-black: #000000;
+  --brand-orange: #E5550D;
+  --card-gray: #D9D9D9;
+  --pure-white: #FFFFFF;
+
+  /* 框線與導覽列比例 */
+  --line-weight: 0.174vw;   /* 3 / 1728 */
+  --nav-pad-x: 4.63vw;      /* 80 / 1728 */
+  --logo-size: 4.05vw;      /* 70 / 1728 */
+
+  /* 章節底板外距與內部比例 (1728 × 1117) */
+  --sheet-side-gap: 12.44vw;  /* 215 / 1728 */
+  --sheet-top-gap: 20.14vh;   /* 225 / 1117 */
+  --sheet-radius: 2.60vw;     /* 45 / 1728 */
+  --space-45-h: 4.03vh;       /* 45 / 1117 */
+  --space-22-5-h: 2.01vh;     /* 22.5 / 1117 */
+  --space-90-h: 8.06vh;       /* 90 / 1117 */
+  --space-135-h: 12.09vh;     /* 135 / 1117 */
+  --space-180-h: 16.11vh;     /* 180 / 1117 (原 135h + 45h) */
+  --space-225-h: 20.14vh;     /* 225 / 1117 */
+  --space-90-w: 5.21vw;       /* 90 / 1728 */
+  --space-135-w: 7.81vw;      /* 135 / 1728 */
+  --space-45-w: 2.60vw;       /* 45 / 1728 */
+  --body-col-w: 31.25vw;      /* 540 / 1728 */
+
+  /* 引腳對照圓環軌道浮動比例 (1728 基準) */
+  --orbit-outer-size: 19.97vw; /* 345 / 1728 */
+  --orbit-inner-size: 10.42vw; /* 180 / 1728 */
+  --orbit-node-size: 5.21vw;   /* 90 / 1728 */
+
+  /* 字級比例 (vw) */
+  --font-64: 3.70vw;          /* 64 / 1728 */
+  --font-48: 2.78vw;          /* 48 / 1728 */
+  --font-32: 1.85vw;          /* 32 / 1728 */
+  --font-20: 1.16vw;          /* 20 / 1728 */
+}
+
+/* =========================================
+2. 全域重置與畫布
+   ========================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scrollbar-gutter: stable;
+  background-color: var(--bg-black);
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+  /* 全站字體：英數優先 Inter，中文自動銜接 Noto Sans TC */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  overflow-x: clip;
+}
+
+/* =========================================
+3. 固定頂部導覽列 (兩橘一白，恆駐最上層不被覆蓋)
+   ========================================= */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 var(--nav-pad-x);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.nav-logo,
+.nav-menu-btn {
+  pointer-events: auto;
+}
+
+.nav-logo {
+  display: block;
+  margin-top: 3.58vh; /* 40 / 1117 */
+  width: var(--logo-size);
+  height: var(--logo-size);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  transform: scale(1.06);
+  opacity: 0.9;
+}
+
+.nav-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.nav-menu-btn {
+  margin-top: 3.67vh; /* 41 / 1117 */
+  width: 5.79vw;      /* 100 / 1728 */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.34vh;        /* 15 / 1117 */
+  padding: 0;
+}
+
+.menu-bar {
+  display: block;
+  height: 1.07vh;     /* 12 / 1117 */
+  border-radius: 0.174vw;
+  transition: transform 0.2s ease, width 0.2s ease;
+}
+
+.bar-orange {
+  width: 100%;
+  background-color: var(--brand-orange);
+}
+
+.bar-white {
+  width: 50%;
+  background-color: var(--pure-white);
+}
+
+.nav-menu-btn:hover .bar-white {
+  width: 75%;
+}
+
+/* =========================================
+4. 側邊選單抽屜 (與全站同步)
+   ========================================= */
+.menu-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.menu-drawer.open {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.menu-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.72);
+}
+
+.menu-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(420px, 85vw);
+  height: 100%;
+  background-color: var(--bg-black);
+  border-left: 3px solid var(--brand-orange);
+  padding: 48px 36px;
+  overflow-x: hidden;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-drawer.open .menu-drawer-panel {
+  transform: translateX(0);
+}
+
+.menu-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  color: var(--brand-orange);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.menu-nav-list {
+  list-style: none;
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menu-nav-list li {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.08s ease, transform 0.08s ease;
+  transition-delay: 0s;
+}
+
+.menu-drawer.open .menu-nav-list li {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.3s ease,
+    transform 0.325s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-drawer.open .menu-nav-list li:nth-child(1) { transition-delay: 0.075s; }
+.menu-drawer.open .menu-nav-list li:nth-child(2) { transition-delay: 0.225s; }
+.menu-drawer.open .menu-nav-list li:nth-child(3) { transition-delay: 0.375s; }
+.menu-drawer.open .menu-nav-list li:nth-child(4) { transition-delay: 0.525s; }
+.menu-drawer.open .menu-nav-list li:nth-child(5) { transition-delay: 0.675s; }
+
+.menu-nav-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  color: var(--pure-white);
+  text-decoration: none;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid var(--brand-orange);
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.menu-nav-list a:hover,
+.menu-nav-list a.is-current {
+  color: var(--brand-orange);
+}
+
+.menu-nav-list a:hover {
+  padding-left: 8px;
+}
+
+.menu-nav-arrow {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.18s ease;
+}
+
+.menu-nav-list a:hover .menu-nav-arrow {
+  transform: translateX(4px);
+}
+
+/* =========================================
+5. 章節淺灰底板（距離左右 215w、距離上方 225h，浮動寬度）
+   ========================================= */
+.article-main {
+  width: 100%;
+  min-height: 100vh;
+  padding: var(--sheet-top-gap) var(--sheet-side-gap) 0;
+}
+
+.chapter-sheet {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - var(--sheet-top-gap));
+  background-color: var(--card-gray);
+  border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+  padding-bottom: var(--space-135-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 由各區塊浮動 vh 間距精準控制垂直節奏 */
+}
+
+/* 左上角「章節 2」：距底板上緣 90h（原 45h + 45h）、左緣 90w，20 級、字距 20% */
+.chapter-label {
+  position: absolute;
+  top: calc(var(--space-45-h) + var(--space-45-h)); /* 90 / 1117 = 8.06vh */
+  left: var(--space-90-w);
+  font-size: var(--font-20);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+  color: var(--brand-orange);
+}
+
+/* 右上角數字標題「02」：距底板上緣 75h（原 30h + 45h），64 級、字距 20%、靠右對齊 */
+.chapter-number {
+  position: absolute;
+  top: calc(2.69vh + var(--space-45-h)); /* 75 / 1117 = 6.72vh */
+  right: var(--space-90-w);
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-64);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  margin-right: -0.2em; /* 抵銷尾字字距，維持右緣精準切齊 */
+  color: var(--brand-orange);
+}
+
+/* =========================================
+6. 中段雙欄主內容（左欄距左 135w、距上 180h（原 135h + 02 下方加 45h）；右欄寬 540w 與標題間距至少 45w）
+   ========================================= */
+.chapter-hero {
+  width: 100%;
+  padding: var(--space-180-h) var(--space-90-w) 0 var(--space-135-w);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-45-w); /* 確保內文與標題距離至少 45w */
+}
+
+.chapter-col-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+/* 主標「你知道關於插頭的基本知識嗎？」：48 級、1.5 倍行高、字距 20% */
+.chapter-heading {
+  font-size: var(--font-48);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.2em;
+  color: var(--brand-orange);
+  white-space: nowrap;
+}
+
+/* 下方 PLUG-IN：48 級、字距 20%，黑底約 270w × 35h（高度以 0.73×48 鎖定大寫字高與上下貼齊） */
+.chapter-brand-badge {
+  margin-top: 3.6vh;
+  min-width: 15.63vw;              /* 270 / 1728 */
+  height: calc(var(--font-48) * 0.73); /* 1728w 下精準為 35px，任何螢幕比例皆與字母上下貼齊 */
+  padding: 0 0.1em 0 0.3em;        /* 補償尾字 0.2em 字距維持左右視覺置中 */
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-48);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* 右欄內文（寬 540w，20 級、1.5 倍行高、字距 20%）與下方 3 顆標籤 */
+.chapter-col-right {
+  width: var(--body-col-w); /* 540 / 1728 */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.chapter-body {
+  width: 100%;
+  font-size: var(--font-20);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.2em;
+  color: var(--brand-orange);
+  text-align: justify;
+}
+
+/* 三顆主題膠囊標籤：距內文 45h，彼此垂直間隔 22.5h */
+.chapter-labels {
+  margin-top: var(--space-45-h); /* 45 / 1117 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-22-5-h);      /* 22.5 / 1117 */
+}
+
+.chapter-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.72vh 2.4vw 0.72vh calc(2.4vw + 0.2em);
+  border-radius: 999px;
+  border: var(--line-weight) solid var(--brand-orange);
+  background-color: transparent;
+  color: var(--brand-orange);
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-20);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.chapter-pill:hover,
+.chapter-pill.is-active {
+  background-color: var(--brand-orange);
+  color: var(--pure-white);
+}
+
+/* =========================================
+7. 下方兩排統計數據（第一排：種類 15 / 頻率 50 - 60；第二排：電壓 100 - 240 / 引腳 2 - 3，排距 135h）
+   ========================================= */
+.chapter-stats {
+  width: 100%;
+  margin-top: calc(7.5vh + var(--space-225-h)); /* 原 7.5vh + 225h (20.14vh) = 27.64vh */
+  padding: 0 var(--space-90-w);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: var(--space-135-h); /* 上下兩排數據以浮動 135h (原 90h + 45h = 12.09vh) 隔開 */
+  align-items: start;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.8vh;
+}
+
+.stat-kicker,
+.stat-caption {
+  font-size: var(--font-20);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em;
+  color: var(--bg-black);
+}
+
+.stat-value {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-48);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: 0.25em;
+  padding-left: 0.25em;
+  color: var(--brand-orange);
+}
+
+/* Number Counter 等寬數字設定，防止跑數過程中文字寬度變化造成抖動 */
+.counter {
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+/* =========================================
+8. 引腳數量的差別（雙圓環軌道對照區塊）
+   - 與上方統計數據距 135h (12.09vh)
+   - 小標與下方 345w 圓環距 135h (原 90h + 45h = 12.09vh)
+   - 左右 345w 圓環距底板最靠近側邊各 135w (7.81vw)，與下排間距 180h (原 90h + 90h = 16.11vh)
+   ========================================= */
+.chapter-pin-compare {
+  width: 100%;
+  margin-top: var(--space-135-h); /* 135 / 1117 = 12.09vh */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 小標「引腳數量的差別」與下方置中細黑線 */
+.pin-compare-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.07vh; /* 約 12 / 1117 */
+}
+
+.pin-compare-heading {
+  font-size: var(--font-20); /* 20 / 1728 */
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em; /* 補償尾字字距維持視覺置中 */
+  color: var(--bg-black);
+  text-align: center;
+}
+
+.pin-compare-divider {
+  display: block;
+  width: 28.5vw; /* 約 492 / 1728，與視覺比例一致 */
+  height: 1px;
+  background-color: var(--bg-black);
+}
+
+/* 三欄對稱格線：左 345w 圓環 | 中央 VS 與按鈕 | 右 345w 圓環，左右留白各 135w */
+.pin-compare-grid {
+  width: 100%;
+  margin-top: var(--space-135-h); /* 小標至下方圓環距 135h (原 90h + 45h = 12.09vh) */
+  padding: 0 var(--space-135-w);  /* 345w 圓環距離各自最靠近側邊 135w (7.81vw) */
+  display: grid;
+  grid-template-columns: var(--orbit-outer-size) 1fr var(--orbit-outer-size);
+  row-gap: var(--space-180-h);    /* 345w 圓環下緣至下排（按鈕與左右標題）間距 180h (原 90h + 90h = 16.11vh) */
+  align-items: center;
+  justify-items: center;
+}
+
+/* 外框線圓環：直徑 345w (19.97vw) */
+.pin-orbit {
+  position: relative;
+  width: var(--orbit-outer-size);
+  height: var(--orbit-outer-size);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pin-orbit--two {
+  border: var(--line-weight) solid var(--bg-black);
+}
+
+.pin-orbit--three {
+  border: var(--line-weight) solid var(--brand-orange);
+}
+
+/* 中央兩個橘色實心黑框圓：直徑 180w (10.42vw) */
+.pin-orbit-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--orbit-inner-size);
+  height: var(--orbit-inner-size);
+  border-radius: 50%;
+  background-color: var(--brand-orange);
+  border: var(--line-weight) solid var(--bg-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.pin-orbit-plug {
+  width: 62%;
+  height: 62%;
+  display: block;
+  object-fit: contain;
+}
+
+/* 外圍旋轉軌道層：衛星圓中心精準貼齊 300w 外框線中心並持續旋轉 */
+.pin-orbit-track {
+  position: absolute;
+  inset: calc(var(--line-weight) * -0.5);
+  border-radius: 50%;
+  z-index: 3;
+  pointer-events: none;
+  animation: pinOrbitSpin 16s linear infinite;
+  will-change: transform;
+}
+
+/* 外圍橘色衛星圓：直徑 90w (5.21vw) */
+.pin-orbit-node {
+  position: absolute;
+  width: var(--orbit-node-size);
+  height: var(--orbit-node-size);
+  border-radius: 50%;
+  background-color: var(--brand-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+}
+
+/* 2 PLUG 衛星初始角度（左上 10:30 與右下 4:30 對角排列） */
+.node-2-n {
+  left: 14.64%;
+  top: 14.64%;
+}
+
+.node-2-l {
+  left: 85.36%;
+  top: 85.36%;
+}
+
+/* 3 PLUG 衛星初始角度（正上 12:00、左下 8:00、右下 4:00 正三角形排列） */
+.node-3-n {
+  left: 50%;
+  top: 0%;
+}
+
+.node-3-l {
+  left: 6.7%;
+  top: 75%;
+}
+
+.node-3-g {
+  left: 93.3%;
+  top: 75%;
+}
+
+/* N / L / G 字母圖示：高度 45h (4.03vh)，同步反向自轉保持字母始終正立 */
+.pin-orbit-letter {
+  height: var(--space-45-h); /* 45 / 1117 = 4.03vh */
+  width: auto;
+  max-width: 72%;
+  max-height: 72%;
+  display: block;
+  object-fit: contain;
+  animation: pinOrbitCounterSpin 16s linear infinite;
+  will-change: transform;
+}
+
+@keyframes pinOrbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pinOrbitCounterSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* 中央 VS：內文置中並垂直對齊兩側 300w 圓心，20 級、字距 40% */
+.pin-compare-vs {
+  align-self: center;
+  justify-self: center;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-20); /* 20 / 1728 */
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.4em;     /* 40% 字距 */
+  padding-left: 0.4em;       /* 補償尾字字距維持視覺置中 */
+  color: var(--bg-black);
+  text-align: center;
+}
+
+/* 左右下方標題與說明（2 PLUG / 3 PLUG）：相對於中央按鈕再下移 90w (5.21vw 浮動寬度) */
+.pin-compare-meta {
+  margin-top: var(--space-90-w); /* 90 / 1728 = 5.21vw，採浮動寬度隨圓環等比縮放 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2.8vh;
+}
+
+.pin-compare-title {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--font-32);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.25em;
+  padding-left: 0.25em;
+  color: var(--brand-orange);
+  white-space: nowrap;
+}
+
+.pin-compare-desc {
+  font-size: var(--font-20);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em;
+  color: var(--bg-black);
+  white-space: nowrap;
+}
+
+/* 中央「前往插頭圖鑑 →」橘底黑字膠囊按鈕 */
+.pin-compare-cta {
+  align-self: start;
+  justify-self: center;
+  margin-top: -1.6vh; /* 微微上提，呼應設計稿位於兩圓下方與標題之間的階梯層次 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9vw;
+  padding: 0.9vh 2.1vw 0.9vh 2.3vw;
+  border-radius: 999px;
+  background-color: var(--brand-orange);
+  color: var(--bg-black);
+  text-decoration: none;
+  font-size: var(--font-20);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.pin-compare-cta-arrow {
+  width: 1.5vw;
+  height: auto;
+  flex-shrink: 0;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.pin-compare-cta:hover {
+  transform: translateY(-2px);
+}
+
+.pin-compare-cta:hover .pin-compare-cta-arrow {
+  transform: translateX(0.3vw);
+}
+
+/* =========================================
+9. 無障礙：尊重使用者「減少動態效果」偏好
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+  .menu-drawer,
+  .menu-drawer-panel,
+  .menu-nav-list li,
+  .chapter-pill,
+  .pin-compare-cta,
+  .pin-compare-cta-arrow {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  .pin-orbit-track,
+  .pin-orbit-letter {
+    animation: none !important;
+  }
+}

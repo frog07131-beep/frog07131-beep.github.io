@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLUG IN - 章節 2</title>
+  <link rel="icon" href="./img/button-logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/article.css">
+</head>
+<body>
+
+  <!-- ==================== 固定頂部導覽列 (與全站統一兩橘一白，恆駐最上層不被覆蓋) ==================== -->
+  <header class="top-nav">
+    <a href="./index.html" class="nav-logo" aria-label="返回 PLUG IN 首頁">
+      <img src="./img/button-logo.svg" alt="PLUG IN Logo">
+    </a>
+
+    <button type="button" id="menu-btn" class="nav-menu-btn" aria-label="開啟選單" aria-expanded="false">
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-white"></span>
+    </button>
+  </header>
+
+  <!-- ==================== 側邊選單遮罩 (與全站 5 項統一) ==================== -->
+  <aside class="menu-drawer" id="menu-drawer" aria-hidden="true">
+    <div class="menu-drawer-backdrop" id="menu-backdrop"></div>
+    <nav class="menu-drawer-panel" aria-label="網站選單">
+      <button type="button" class="menu-close-btn" id="menu-close-btn" aria-label="關閉選單">✕</button>
+      <ul class="menu-nav-list">
+        <li>
+          <a href="./guide.html?view=map">
+            <span>插頭世界地圖</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./guide.html?view=gallery&spec=all&page=1">
+            <span>插頭圖鑑</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./travel.html">
+            <span>旅行查詢器</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./info.html" class="is-current" aria-current="page">
+            <span>資訊與文章</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./quiz.html">
+            <span>用電安全隨堂考</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ==================== 文章章節底板 (距左右 215w、距上方 225h) ==================== -->
+  <main class="article-main">
+    <article class="chapter-sheet" aria-labelledby="chapter-heading">
+
+      <!-- 頂部左右資訊：左上「章節 2」(距上 45h、左 90w)，右上數字標題「02」(64 級置右置上) -->
+      <span class="chapter-label" id="chapter-label">章節 2</span>
+      <span class="chapter-number" id="chapter-number" aria-label="章節編號 02">02</span>
+
+      <!-- 中段雙欄主內容：左欄距左 135w、距上 135h；右欄寬 540w 與標題間隔至少 45w -->
+      <section class="chapter-hero">
+        <div class="chapter-col-left">
+          <h1 class="chapter-heading" id="chapter-heading">你知道關於插頭的<br>基本知識嗎？</h1>
+          <div class="chapter-brand-badge" id="chapter-brand-badge">PLUG-IN</div>
+        </div>
+
+        <div class="chapter-col-right">
+          <p class="chapter-body" id="chapter-body">插頭是日常生活中不可或缺的電力連接工具，負責將電器與電源連接，讓電力順利傳輸。然而，不同國家因電力系統與安全規範不同，發展出各式各樣的插頭形狀與規格，從電壓、頻率到引腳數量，都藏著值得了解的小知識。</p>
+
+          <!-- 三顆標籤：距內文 45h，彼此間隔 22.5h -->
+          <div class="chapter-labels" id="chapter-labels" role="group" aria-label="文章主題標籤">
+            <button type="button" class="chapter-pill is-active">電力規格解析</button>
+            <button type="button" class="chapter-pill">全球插頭種類</button>
+            <button type="button" class="chapter-pill">電壓與頻率</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 下方兩排統計數據（GSAP ScrollTrigger 數字跳動效果，上下排間隔 90h） -->
+      <section class="chapter-stats" id="chapter-stats" aria-label="插頭重點數據">
+        <div class="stat-item">
+          <span class="stat-kicker">種類</span>
+          <strong class="stat-value"><span class="counter" data-start="0" data-target="15">0</span></strong>
+          <span class="stat-caption">全世界的插頭種類數量</span>
+        </div>
+
+        <div class="stat-item">
+          <span class="stat-kicker">頻率</span>
+          <strong class="stat-value">50 - <span class="counter" data-start="50" data-target="60">50</span></strong>
+          <span class="stat-caption">常見的交流電頻率</span>
+        </div>
+
+        <div class="stat-item">
+          <span class="stat-kicker">電壓</span>
+          <strong class="stat-value">100 - <span class="counter" data-start="100" data-target="240">100</span></strong>
+          <span class="stat-caption">常見的電壓區間</span>
+        </div>
+
+        <div class="stat-item">
+          <span class="stat-kicker">引腳</span>
+          <strong class="stat-value">2 - 3</strong>
+          <span class="stat-caption">每一插頭常見的引腳的數量</span>
+        </div>
+      </section>
+
+      <!-- 下方「引腳數量的差別」雙圓環軌道對照區塊（距上 135h、小標距圓環 135h、圓環距下排 180h） -->
+      <section class="chapter-pin-compare" aria-labelledby="pin-compare-heading">
+        <div class="pin-compare-header">
+          <h2 class="pin-compare-heading" id="pin-compare-heading">引腳數量的差別</h2>
+          <span class="pin-compare-divider" aria-hidden="true"></span>
+        </div>
+
+        <div class="pin-compare-grid">
+          <!-- 左側：2 PLUG 黑色外圈（345w）＋中央橘圈（180w）＋旋轉衛星 N / L（90w） -->
+          <div class="pin-orbit pin-orbit--two" aria-label="2 腳插頭結構示意：火線 L 與中性線 N">
+            <div class="pin-orbit-core">
+              <img src="./img/plug-3d-E.png" alt="2 腳插頭立體圖示" class="pin-orbit-plug">
+            </div>
+            <div class="pin-orbit-track">
+              <span class="pin-orbit-node node-2-n" aria-label="中性線 N">
+                <img src="./img/letter-N.png" alt="N" class="pin-orbit-letter">
+              </span>
+              <span class="pin-orbit-node node-2-l" aria-label="火線 L">
+                <img src="./img/letter-L.png" alt="L" class="pin-orbit-letter">
+              </span>
+            </div>
+          </div>
+
+          <!-- 中央：VS（置中對齊左右兩圈圓心，20 級、字距 40%） -->
+          <div class="pin-compare-vs" aria-hidden="true">VS</div>
+
+          <!-- 右側：3 PLUG 橘色外圈（345w）＋中央橘圈（180w）＋旋轉衛星 N / L / G（90w） -->
+          <div class="pin-orbit pin-orbit--three" aria-label="3 腳插頭結構示意：火線 L、地線 G 與中性線 N">
+            <div class="pin-orbit-core">
+              <img src="./img/plug-3d-D.png" alt="3 腳插頭立體圖示" class="pin-orbit-plug">
+            </div>
+            <div class="pin-orbit-track">
+              <span class="pin-orbit-node node-3-n" aria-label="中性線 N">
+                <img src="./img/letter-N.png" alt="N" class="pin-orbit-letter">
+              </span>
+              <span class="pin-orbit-node node-3-l" aria-label="火線 L">
+                <img src="./img/letter-L.png" alt="L" class="pin-orbit-letter">
+              </span>
+              <span class="pin-orbit-node node-3-g" aria-label="地線 G">
+                <img src="./img/letter-G.png" alt="G" class="pin-orbit-letter">
+              </span>
+            </div>
+          </div>
+
+          <!-- 下排左側說明 -->
+          <div class="pin-compare-meta">
+            <h3 class="pin-compare-title">2 PLUG</h3>
+            <p class="pin-compare-desc">火線、中性線</p>
+          </div>
+
+          <!-- 下排中央：前往插頭圖鑑膠囊按鈕 -->
+          <a href="./guide.html?view=gallery&spec=all&page=1" class="pin-compare-cta">
+            <span>前往插頭圖鑑</span>
+            <svg class="pin-compare-cta-arrow" viewBox="0 0 28 20" fill="none" aria-hidden="true">
+              <path d="M2 10H25M25 10L17 2.5M25 10L17 17.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <!-- 下排右側說明 -->
+          <div class="pin-compare-meta">
+            <h3 class="pin-compare-title">3 PLUG</h3>
+            <p class="pin-compare-desc">火線、地線、中性線</p>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- GSAP 與 ScrollTrigger 外掛（供下方 Number Counter 捲動觸發動畫使用） -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="./js/article.js"></script>
+</body>
+</html>

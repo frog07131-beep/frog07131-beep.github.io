@@ -32,10 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
   //    - 向上捲動自動完全反向操作
   // =========================================
   const storyTrack = document.getElementById('info-story-track');
+  const storyStage = document.getElementById('info-story-stage');
   const mainTitle = document.getElementById('info-main-title');
   const keywords = Array.from(document.querySelectorAll('.info-keyword'));
   const dotsKeyword = document.getElementById('info-keyword-dots');
   const introCopy = document.getElementById('info-intro-copy');
+  const whiteOrb = document.getElementById('info-white-orb');
+  const boardReveal = document.getElementById('info-board-reveal');
 
   // 將主標題拆成各自獨立的字元 span，讓滑鼠移過每個字時可像鋼琴鍵般獨立向上彈起
   if (mainTitle) {
@@ -55,22 +58,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // 設計稿基準：180h / 1117h = 0.161145...；字級由 36 級等比縮小至 20 級
   const TITLE_STOP_RATIO = 180 / 1117;
   const TITLE_MIN_SCALE = 20 / 36;
-  // 主標題上移行程、到位後停頓（約 2 下）、每段關鍵字切換距離（約 3 下），以及「...」登場後再捲 2 下散開
+  // 主標題上移行程、到位後停頓（約 2 下）、每段關鍵字切換距離（約 3 下），
+  // 以及「...」登場後每捲 2 下依序觸發：點點散開 → 白圈入左下角 → 置中下移 90h → 右上角 1/4 圓 → 擴散刷屏揭露框架
   const TITLE_SCROLL_VH = 0.35;
   const TITLE_HOLD_VH = 0.20;
   const STAGE_STEP_VH = 0.35;
   const DOTS_SPREAD_HOLD_VH = 0.20;
+  const ORB_PEEK_HOLD_VH = 0.20;
+  const ORB_CENTER_HOLD_VH = 0.20;
+  const ORB_TOPRIGHT_HOLD_VH = 0.20;
+  const ORB_WIPE_HOLD_VH = 0.20;
+  // 白圈直徑 360h（半徑 180h）與置中下移 90h 之設計稿比例
+  const ORB_RADIUS_RATIO = 180 / 1117;
+  const ORB_CENTER_OFFSET_RATIO = 90 / 1117;
   // 前一個關鍵字移出與下一個關鍵字移入之間的間隔時間（1 秒）
   const KEYWORD_GAP_MS = 1000;
   // 首次登場自動放大提示：進場就位延遲、慢速縮放（0.7s）與放大停留時間（1.7s，較原本放慢一倍）
   const AUTO_ZOOM_DELAY_MS = 650;
   const AUTO_ZOOM_HOLD_MS = 1700;
   const AUTO_ZOOM_SETTLE_MS = 700;
+  // 刷屏延遲：白圈擴散與文章框架圓形刷屏之間的時間差（形成明顯白色波紋刷屏感）
+  const WIPE_REVEAL_DELAY_MS = 260;
+  const WIPE_COLLAPSE_DELAY_MS = 240;
 
   let targetStage = -1;
   let shownStage = -1;
   let wantDotsSpread = false;
   let isDotsSpread = false;
+  let orbStage = 0; // 0: 左上畫面外, 1: 左下 1/4 圓, 2: 置中下移 90h, 3: 右上 1/4 圓, 4: 擴散全螢幕＋刷屏揭露框架
+  let orbAnimRaf = null;
+  let boardWipeTimer = null;
+  let orbPos = { x: 0, y: 0, opacity: 0, scale: 1 };
   let enterTimer = null;
   let autoZoomStartTimer = null;
   let autoZoomEndTimer = null;
@@ -78,6 +96,187 @@ document.addEventListener('DOMContentLoaded', () => {
   let lastExitTime = 0;
   let rafId = null;
   const seenStages = new Set(); // 記錄已自動放大過的關鍵字索引，確保各字僅首次自動放大
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // 計算白圈自右上角 (100vw, 0) 擴散至完整覆蓋整個螢幕所需的縮放倍率
+  function getOrbFullScale() {
+    const vw = window.innerWidth || 1;
+    const vh = window.innerHeight || 1;
+    const r = Math.max(1, vh * ORB_RADIUS_RATIO);
+    return Math.hypot(vw, vh) / r + 1.5;
+  }
+
+  // 計算白圈五階段的響應式圓心座標與縮放倍率（單位 px）
+  function getOrbAnchor(stage) {
+    const vw = window.innerWidth || 1;
+    const vh = window.innerHeight || 1;
+    const r = vh * ORB_RADIUS_RATIO;
+    if (stage === 0) {
+      // 起點設於畫面左方中上位置之外，準備沿弧線滑入左下角
+      return { x: -r - 24, y: vh * 0.35, opacity: 0, scale: 1 };
+    }
+    if (stage === 1) {
+      // 左下角露出右上 1/4 圓
+      return { x: 0, y: vh, opacity: 1, scale: 1 };
+    }
+    if (stage === 2) {
+      // 水平置中、垂直置中再下移 90h
+      return { x: vw * 0.5, y: vh * (0.5 + ORB_CENTER_OFFSET_RATIO), opacity: 1, scale: 1 };
+    }
+    if (stage === 3) {
+      // 右上角僅露出左下 1/4 圓
+      return { x: vw, y: 0, opacity: 1, scale: 1 };
+    }
+    // 階段 4：自右上角等比擴散至覆蓋全螢幕
+    return { x: vw, y: 0, opacity: 1, scale: getOrbFullScale() };
+  }
+
+  // 直接套用白圈圓心座標、透明度與縮放倍率（純 GPU translate3d + scale）
+  function renderOrb(x, y, opacity, scale = 1) {
+    orbPos = { x, y, opacity, scale };
+    if (!whiteOrb) return;
+    const r = (window.innerHeight || 1) * ORB_RADIUS_RATIO;
+    whiteOrb.style.transform = `translate3d(${(x - r).toFixed(2)}px, ${(y - r).toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
+    whiteOrb.style.opacity = opacity.toFixed(3);
+  }
+
+  // 設定文章框架刷屏揭露層狀態
+  function setBoardRevealed(revealed) {
+    if (!boardReveal) return;
+    boardReveal.classList.toggle('is-revealed', revealed);
+    boardReveal.setAttribute('aria-hidden', String(!revealed));
+  }
+
+  // 執行白圈由當前座標／縮放平滑過渡至指定階段
+  function animateOrbTo(prevStage, nextStage) {
+    if (orbAnimRaf !== null) {
+      cancelAnimationFrame(orbAnimRaf);
+      orbAnimRaf = null;
+    }
+
+    const start = { ...orbPos };
+    const isEntryArc = (prevStage === 0 && nextStage === 1) || (prevStage === 1 && nextStage === 0);
+    const isLowerArc = (prevStage === 1 && nextStage === 2) || (prevStage === 2 && nextStage === 1);
+    const isTopRightArc = (prevStage === 2 && nextStage === 3) || (prevStage === 3 && nextStage === 2);
+    const isWipeScale = (prevStage === 3 && nextStage === 4) || (prevStage === 4 && nextStage === 3);
+    const duration = isWipeScale ? 660 : (isEntryArc ? 820 : 880);
+    const startTime = performance.now();
+
+    function step(now) {
+      const u = Math.min(1, (now - startTime) / duration);
+      // 進場、弧線與擴散皆採流暢曲線；退回畫面外採 ease-in
+      let t;
+      if (nextStage === 0) {
+        t = u * u * u;
+      } else if (nextStage === 4) {
+        // 擴散白屏：快速加速掃過全螢幕
+        t = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      } else {
+        t = 1 - Math.pow(1 - u, 3);
+      }
+
+      const vw = window.innerWidth || 1;
+      const vh = window.innerHeight || 1;
+      const r = vh * ORB_RADIUS_RATIO;
+      const target = getOrbAnchor(nextStage);
+
+      let x;
+      let y;
+      if (isWipeScale) {
+        x = start.x + (target.x - start.x) * t;
+        y = start.y + (target.y - start.y) * t;
+      } else {
+        let ctrlX;
+        let ctrlY;
+        if (isEntryArc) {
+          // 0↔1：由左方中上 (-r-24, 35vh) 順弧線下滑至左下角 (0, 100vh)
+          ctrlX = -r * 0.45;
+          ctrlY = vh * 0.82;
+        } else if (isLowerArc) {
+          // 1↔2：由左下角 (0, 100vh) 貼底向右劃出下弧線再揚起至置中下移 90h
+          ctrlX = vw * 0.42;
+          ctrlY = vh * 1.12;
+        } else if (isTopRightArc) {
+          // 2↔3：延續往右上方順滑揚起的弧線，抵達右上角 (100vw, 0) 僅露左下 1/4 圓
+          ctrlX = vw * 0.78;
+          ctrlY = vh * 0.42;
+        } else {
+          ctrlX = vw * 0.5;
+          ctrlY = vh * 0.95;
+        }
+        const inv = 1 - t;
+        x = inv * inv * start.x + 2 * inv * t * ctrlX + t * t * target.x;
+        y = inv * inv * start.y + 2 * inv * t * ctrlY + t * t * target.y;
+      }
+
+      const opacity = start.opacity + (target.opacity - start.opacity) * t;
+      const scale = start.scale + (target.scale - start.scale) * t;
+      renderOrb(x, y, opacity, scale);
+
+      if (u < 1) {
+        orbAnimRaf = window.requestAnimationFrame(step);
+      } else {
+        orbAnimRaf = null;
+        renderOrb(target.x, target.y, target.opacity, target.scale);
+      }
+    }
+
+    orbAnimRaf = window.requestAnimationFrame(step);
+  }
+
+  // 依階段執行白圈與刷屏轉場：
+  // 3 → 4：白圈先擴散全螢幕，260ms 後文章框架隨圓形刷屏跟進揭露（形成白波刷屏感）
+  // 4 → 3：文章框架先反向收束，240ms 後白圈同步縮回右上角 1/4 圓
+  function applyOrbStage(nextOrbStage, immediate = false) {
+    if (!whiteOrb) return;
+    if (!immediate && nextOrbStage === orbStage) return;
+
+    const prevOrbStage = orbStage;
+    orbStage = nextOrbStage;
+
+    if (boardWipeTimer !== null) {
+      clearTimeout(boardWipeTimer);
+      boardWipeTimer = null;
+    }
+
+    if (storyStage) {
+      storyStage.classList.toggle('is-orb-centered', nextOrbStage >= 2);
+    }
+
+    const end = getOrbAnchor(nextOrbStage);
+    if (immediate || prefersReducedMotion.matches) {
+      if (orbAnimRaf !== null) {
+        cancelAnimationFrame(orbAnimRaf);
+        orbAnimRaf = null;
+      }
+      renderOrb(end.x, end.y, end.opacity, end.scale);
+      setBoardRevealed(nextOrbStage === 4);
+      return;
+    }
+
+    if (nextOrbStage === 4) {
+      // 正向刷屏：白圈立刻擴散掃屏，260ms 後新框架緊跟其後圓形刷入
+      animateOrbTo(prevOrbStage, 4);
+      boardWipeTimer = window.setTimeout(() => {
+        boardWipeTimer = null;
+        if (orbStage === 4) {
+          setBoardRevealed(true);
+        }
+      }, WIPE_REVEAL_DELAY_MS);
+    } else if (prevOrbStage === 4 && nextOrbStage === 3) {
+      // 反向刷屏：先將文章框架往右上收束露出白幕，240ms 後白圈縮回右上角 1/4 圓
+      setBoardRevealed(false);
+      boardWipeTimer = window.setTimeout(() => {
+        boardWipeTimer = null;
+        if (orbStage === 3) {
+          animateOrbTo(4, 3);
+        }
+      }, WIPE_COLLAPSE_DELAY_MS);
+    } else {
+      setBoardRevealed(false);
+      animateOrbTo(prevOrbStage, nextOrbStage);
+    }
+  }
 
   // 切換「...」散開至 320% 與下方 45h 引言的顯示狀態（往上滑自動反向收合）
   function applyDotsSpread(spread) {
@@ -271,6 +470,24 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (shownStage === lastStageIdx) {
       applyDotsSpread(true);
     }
+
+    // 4. 點點散開後每再滑動 2 下依序觸發：
+    //    左下角 1/4 圓 → 下弧線置中下移 90h → 右上角 1/4 圓 → 擴散全螢幕＋刷屏揭露文章框架
+    const orbPeekDist = dotsSpreadDist + vh * ORB_PEEK_HOLD_VH;
+    const orbCenterDist = orbPeekDist + vh * ORB_CENTER_HOLD_VH;
+    const orbTopRightDist = orbCenterDist + vh * ORB_TOPRIGHT_HOLD_VH;
+    const orbWipeDist = orbTopRightDist + vh * ORB_WIPE_HOLD_VH;
+    let nextOrbStage = 0;
+    if (scrolled >= orbWipeDist) {
+      nextOrbStage = 4;
+    } else if (scrolled >= orbTopRightDist) {
+      nextOrbStage = 3;
+    } else if (scrolled >= orbCenterDist) {
+      nextOrbStage = 2;
+    } else if (scrolled >= orbPeekDist) {
+      nextOrbStage = 1;
+    }
+    applyOrbStage(nextOrbStage);
   }
 
   function requestSceneUpdate() {
@@ -279,9 +496,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.addEventListener('scroll', requestSceneUpdate, { passive: true });
-  window.addEventListener('resize', requestSceneUpdate, { passive: true });
+  window.addEventListener('resize', () => {
+    if (orbAnimRaf === null) {
+      const anchor = getOrbAnchor(orbStage);
+      renderOrb(anchor.x, anchor.y, anchor.opacity, anchor.scale);
+    }
+    requestSceneUpdate();
+  }, { passive: true });
 
-  // 初始渲染（含字體載入完成後重算一次高度，確保正中定位準確）
+  // 初始渲染（先將白圈靜態定位於左側畫面外，避免初次進頁閃現）
+  applyOrbStage(0, true);
   updateScrollScene();
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(requestSceneUpdate);

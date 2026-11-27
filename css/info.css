@@ -5,6 +5,7 @@
   /* 色彩規範 */
   --bg-black: #000000;
   --brand-orange: #E5550D;
+  --card-gray: #D9D9D9;
   --pure-white: #FFFFFF;
 
   /* 導覽列比例 (與 guide.css / travel.css 同步) */
@@ -15,9 +16,19 @@
   --font-64: 3.70vw;        /* 64 / 1728 */
   --font-36: 2.08vw;        /* 36 / 1728 */
 
-  /* 主標題停駐位置：距頂 180h (180 / 1117 = 16.11vh) 與 45h 間距 */
+  /* 主標題停駐位置：距頂 180h (180 / 1117 = 16.11vh)、45h 間距與 360h 白圈直徑 */
   --title-stop-top: 16.11vh;
   --space-45-h: 4.03vh;     /* 45 / 1117 */
+  --orb-size: 32.23vh;      /* 360 / 1117 */
+
+  /* 文章框架卡片比例 (1728 × 1117 基準：大框 1305×405、小框 360×225、上下 90h、左右 112.5w) */
+  --board-big-w: 75.52vw;       /* 1305 / 1728 */
+  --board-big-h: 36.26vh;       /* 405 / 1117 */
+  --board-small-w: 20.83vw;     /* 360 / 1728 */
+  --board-small-h: 20.14vh;     /* 225 / 1117 */
+  --board-gap-y: 8.06vh;        /* 90 / 1117 */
+  --board-gap-x: 6.51vw;        /* 112.5 / 1728 */
+  --board-card-radius: 2.60vw;  /* 45 / 1728 */
 }
 
 /* =========================================
@@ -102,7 +113,7 @@ body {
   display: block;
   height: 1.07vh;     /* 12 / 1117 */
   border-radius: 0.174vw;
-  transition: transform 0.2s ease, width 0.2s ease;
+  transition: transform 0.2s ease, width 0.2s ease, background-color 0.45s ease;
 }
 
 .bar-orange {
@@ -246,15 +257,19 @@ body {
   width: 100%;
 }
 
-/* 捲動軌道總高 330vh（可捲動行程 230vh）：
+/* 捲動軌道總高 435vh（可捲動行程 335vh）：
    0~35vh 主標題由中央上移至 180h；
    35~55vh 主標題停駐緩衝（再滑約 2 下）；
    55~90vh 小知識；90~125vh 資訊；125~160vh 更多；160~180vh ...（約 2 下）；
-   180~230vh ... 散開至 320% 並於下方 45h 浮現引言 */
+   180~200vh ... 散開至 320% 並於下方 45h 浮現引言（約 2 下）；
+   200~220vh 直徑 360h 白圈自左方中上移入左下角（約 2 下）；
+   220~240vh 白圈沿下弧線軌跡移至畫面置中下移 90h，前景文字上移漸淡（約 2 下）；
+   240~260vh 白圈移至右上角僅露左下 1/4 圓（約 2 下）；
+   260~335vh 白圈擴散覆蓋全螢幕並刷屏揭露文章網站框架 */
 .info-story-track {
   position: relative;
   width: 100%;
-  height: 330vh;
+  height: 435vh;
   background-color: var(--bg-black);
 }
 
@@ -281,6 +296,7 @@ body {
   transform-origin: center top; /* 以頂部水平中點為縮放原點，確保縮小至 20 級時頂緣精準停在 180h */
   /* 預設（JS 初始化前）垂直水平置中；捲動後由 JS 以 translate3d + scale 平滑移至 180h (16.11vh) */
   transform: translate3d(-50%, calc(50vh - 50%), 0) scale(1);
+  translate: 0 0; /* 獨立位移屬性：白球進場時平滑上移淡出，不與 JS transform 衝突 */
   font-size: var(--font-36);
   font-weight: 400;
   line-height: 1.3;
@@ -288,8 +304,11 @@ body {
   color: var(--brand-orange);
   white-space: nowrap;
   text-align: center;
-  will-change: transform;
+  will-change: transform, opacity;
   user-select: none;
+  transition:
+    translate 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.75s ease;
 }
 
 /* 單一字元鋼琴鍵互動：各自獨立感應滑鼠移入並向上回彈 */
@@ -313,6 +332,11 @@ body {
   inset: 0;
   z-index: 10;
   pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+  transition:
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.75s ease;
 }
 
 /* 關鍵字基礎與「移出」狀態：皆大於 0.5 秒並強化 ease-in 加速離場（向下向右移出、向上退回左側）
@@ -383,10 +407,11 @@ body {
   padding-left: 0;
 }
 
+/* 向上捲回收合點點時延遲 0.25s（待下方引言先退場後再緩慢收攏，避免雙向重疊） */
 .dot-char {
   display: inline-block;
   will-change: transform;
-  transition: transform 0.85s cubic-bezier(0.08, 0.96, 0.18, 1);
+  transition: transform 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
 }
 
 /* 收合預設：維持 60% (0.6em) 字距 */
@@ -402,10 +427,17 @@ body {
   transform: translate3d(0.6em, 0, 0);
 }
 
-/* 展開態：外框以純 transform 上移 14vh（50vh → 36vh），左右兩點平滑散開至 320% (3.2em)，中間點鎖定正中 */
+/* 展開態：外框以 1.25s 純 transform 優雅上移 14vh（50vh → 36vh），左右兩點同步以 1.25s 散開至 320% */
 .info-keyword-dots.is-active.is-spread {
   transform: translate3d(-50%, calc(-50% - 14vh), 0);
   cursor: default;
+  transition:
+    transform 1.25s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.65s cubic-bezier(0.08, 0.96, 0.18, 1);
+}
+
+.info-keyword-dots.is-spread .dot-char {
+  transition: transform 1.25s cubic-bezier(0.16, 1, 0.3, 1) 0s;
 }
 
 .info-keyword-dots.is-spread .dot-left {
@@ -438,20 +470,20 @@ body {
   white-space: nowrap;
   user-select: none;
   will-change: transform, opacity;
-  /* 向上捲回時以 ease-in 淡出收合 */
+  /* 向上捲回時優先於 0.45s 內迅速淡出，讓上方點點收合時完全不重疊 */
   transition:
-    opacity 0.55s cubic-bezier(0.76, 0, 0.92, 0.2),
-    transform 0.6s cubic-bezier(0.76, 0, 0.92, 0.2);
+    opacity 0.45s cubic-bezier(0.76, 0, 0.92, 0.2) 0s,
+    transform 0.45s cubic-bezier(0.76, 0, 0.92, 0.2) 0s;
 }
 
 .info-intro-copy.is-visible {
   opacity: 1;
   transform: translate3d(-50%, 0, 0);
   pointer-events: auto;
-  /* 隨點點散開以 ease-out 平滑浮現 */
+  /* 待點點確實上移並散開（延遲 0.75s）後再以 0.85s ease-out 浮現，徹底消除半路重疊 */
   transition:
-    opacity 0.8s cubic-bezier(0.08, 0.96, 0.18, 1) 0.15s,
-    transform 0.85s cubic-bezier(0.08, 0.96, 0.18, 1) 0.15s;
+    opacity 0.85s cubic-bezier(0.08, 0.96, 0.18, 1) 0.75s,
+    transform 0.85s cubic-bezier(0.08, 0.96, 0.18, 1) 0.75s;
 }
 
 /* 已離場：滑出至畫面右側之外（最後的「...」不會套用此狀態） */
@@ -461,19 +493,147 @@ body {
 }
 
 /* =========================================
-9. 無障礙：尊重使用者「減少動態效果」偏好
+9. 直徑 360h 白圈（先自左移入左下角，再沿下弧線軌跡移至置中下移 90h）
+   ========================================= */
+.info-white-orb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--orb-size);
+  height: var(--orb-size);
+  border-radius: 50%;
+  background-color: var(--pure-white);
+  z-index: 12; /* 低於固定 Logo / Menu (z-index: 120) */
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* 白圈沿下弧線移至中央時，同步將主標題、散開點點與 5 行橘色陳述往上平滑移動並漸淡（向上捲回時降回浮現） */
+.info-story-stage.is-orb-centered .info-main-title {
+  translate: 0 -20vh;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.info-story-stage.is-orb-centered .info-keyword-stage {
+  transform: translate3d(0, -24vh, 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.info-story-stage.is-orb-centered .info-intro-copy,
+.info-story-stage.is-orb-centered .info-intro-copy.is-visible {
+  transform: translate3d(-50%, -24vh, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.75s ease;
+}
+
+/* =========================================
+10. 刷屏揭露層與文章網站框架（1305×405 大框 + 三張 360×225 小框，上下 90h、左右 112.5w）
+   ========================================= */
+.info-board-reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 30; /* 蓋過擴散白圈 (z-index: 12)，仍低於固定 Logo / Menu (z-index: 120) */
+  background-color: var(--bg-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 6vh; /* 避開頂部導覽列，讓整體框架視覺平衡落於畫面中央 */
+  pointer-events: none;
+  /* 預設收束於右上角圓點（0%），向上捲回時以 ease-in 刷回右上角露出白波 */
+  clip-path: circle(0% at 100% 0%);
+  will-change: clip-path;
+  transition: clip-path 0.58s cubic-bezier(0.76, 0, 0.92, 0.2);
+}
+
+/* 隨白圈擴散後以圓形刷屏從右上角掃過全螢幕，揭露出文章框架 */
+.info-board-reveal.is-revealed {
+  clip-path: circle(160% at 100% 0%);
+  pointer-events: auto;
+  transition: clip-path 0.82s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.info-board-layout {
+  width: var(--board-big-w); /* 1305 / 1728 */
+  display: flex;
+  flex-direction: column;
+  gap: var(--board-gap-y); /* 上下間隔 90h */
+}
+
+/* 四張文章按鈕卡片：原生開新分頁連結，具備滑鼠指標、微浮起與亮色互動回饋 */
+.info-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background-color: var(--card-gray);
+  border-radius: var(--board-card-radius);
+  cursor: pointer;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.22s ease,
+    box-shadow 0.25s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-0.55vh);
+  background-color: var(--pure-white);
+  box-shadow: 0 1.2vh 2.8vh rgba(229, 85, 13, 0.22);
+}
+
+.info-card:focus-visible {
+  outline: 3px solid var(--brand-orange);
+  outline-offset: 4px;
+}
+
+.info-card:active {
+  transform: translateY(-0.15vh) scale(0.99);
+}
+
+/* 上方大框：1305w × 405h */
+.info-card-featured {
+  width: 100%;
+  height: var(--board-big-h);
+}
+
+/* 下方三張小框列：各 360w × 225h，左右間隔 112.5w（360×3 + 112.5×2 = 1305w 精準切齊） */
+.info-board-small-row {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--board-gap-x);
+}
+
+.info-card-small {
+  width: var(--board-small-w);
+  height: var(--board-small-h);
+  flex-shrink: 0;
+}
+
+/* =========================================
+11. 無障礙：尊重使用者「減少動態效果」偏好
    ========================================= */
 @media (prefers-reduced-motion: reduce) {
   .menu-drawer,
   .menu-drawer-panel,
   .menu-nav-list li,
+  .info-main-title,
   .title-char,
+  .info-keyword-stage,
   .info-keyword,
   .info-keyword.is-active,
   .info-keyword-inner,
   .dot-char,
   .info-intro-copy,
-  .info-intro-copy.is-visible {
+  .info-intro-copy.is-visible,
+  .info-board-reveal,
+  .info-board-reveal.is-revealed,
+  .info-card {
     transition-duration: 0.01ms !important;
     transition-delay: 0s !important;
   }

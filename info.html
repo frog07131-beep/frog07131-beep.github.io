@@ -86,12 +86,32 @@
 
         <!-- 點點散開後於其下方間隔 45h 顯示之引言（36 級、字距 20%、置中） -->
         <p class="info-intro-copy" id="info-intro-copy" aria-hidden="true">
-          插頭圍繞每天都在我們的<br>
+          插頭每天都圍繞在我們的<br>
           生活當中，但我們除了<br>
           日常的插拔之外對其<br>
           並沒有更深入<br>
           了解
         </p>
+
+        <!-- 直徑 360h 白圈：左下角 → 下弧線置中下移 90h → 右上角 1/4 圓 → 擴散全螢幕刷屏 -->
+        <div class="info-white-orb" id="info-white-orb" aria-hidden="true"></div>
+
+        <!-- 刷屏揭露之文章網站框架（上方大框 1305w×405h，下方三張小框 360w×225h，上下間隔 90h、左右間隔 112.5w）
+             四張卡片皆以 target="_blank" 另開新分頁進入對應文章模板 article.html -->
+        <section class="info-board-reveal" id="info-board-reveal" aria-label="資訊與文章框架" aria-hidden="true">
+          <div class="info-board-layout">
+            <!-- 大框按鈕：另開新分頁前往精選文章 -->
+            <a class="info-card info-card-featured" href="./article.html?id=featured" target="_blank" rel="noopener noreferrer" data-card-id="featured" aria-label="前往精選文章（另開新分頁）"></a>
+            <div class="info-board-small-row">
+              <!-- 小框按鈕 1：另開新分頁前往文章 01 -->
+              <a class="info-card info-card-small" href="./article.html?id=1" target="_blank" rel="noopener noreferrer" data-card-id="card-1" aria-label="前往文章 01（另開新分頁）"></a>
+              <!-- 小框按鈕 2：另開新分頁前往文章 02 -->
+              <a class="info-card info-card-small" href="./article.html?id=2" target="_blank" rel="noopener noreferrer" data-card-id="card-2" aria-label="前往文章 02（另開新分頁）"></a>
+              <!-- 小框按鈕 3：另開新分頁前往文章 03 -->
+              <a class="info-card info-card-small" href="./article.html?id=3" target="_blank" rel="noopener noreferrer" data-card-id="card-3" aria-label="前往文章 03（另開新分頁）"></a>
+            </div>
+          </div>
+        </section>
       </div>
     </section>
   </main>
