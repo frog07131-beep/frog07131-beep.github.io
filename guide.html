@@ -233,6 +233,25 @@
       </div>
     </aside>
 
+    <!-- 右側中線循環切換按鈕組 (對應 Figma 1-3-K button-arrow-prev / button-arrow-back，對齊 Menu 右緣、間距 90h 置中橘黑中線) -->
+    <nav class="detail-pager-nav" aria-label="循環切換插頭型號">
+      <!-- 上方 PREV（橘底黑線 + 右箭頭，往下一款切換，O 循環回 A） -->
+      <button type="button" class="detail-pager-btn detail-pager-prev" id="detail-prev-btn" aria-label="切換至下一個插頭型號">
+        <svg class="detail-pager-chevron" viewBox="0 0 24 24" aria-hidden="true">
+          <polyline points="9,5 16,12 9,19"></polyline>
+        </svg>
+        <span class="detail-pager-label">PREV</span>
+      </button>
+
+      <!-- 下方 BACK（黑底橘線 + 左箭頭，往上一款切換，A 循環回 O） -->
+      <button type="button" class="detail-pager-btn detail-pager-back" id="detail-back-plug-btn" aria-label="切換至上一個插頭型號">
+        <svg class="detail-pager-chevron" viewBox="0 0 24 24" aria-hidden="true">
+          <polyline points="15,5 8,12 15,19"></polyline>
+        </svg>
+        <span class="detail-pager-label">BACK</span>
+      </button>
+    </nav>
+
     <!-- 下半部黑色背景資訊區 (left=80, top=668, 兩欄 Drop-down Menu) -->
     <section class="detail-info-section">
       <div class="detail-info-columns">

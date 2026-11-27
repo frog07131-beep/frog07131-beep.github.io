@@ -8,6 +8,7 @@
   --card-gray: #D9D9D9;
   --pure-white: #FFFFFF;
   --text-muted: #464444;
+  --hover-gray: #BEBBBA;
 
   /* 框線粗度 (3 / 1728 = 0.1736vw) */
   --line-weight: 0.174vw;
@@ -46,21 +47,27 @@
   padding: 0;
 }
 
+/* 測驗頁固定滿版長寬（100vw × 100vh），禁止畫面上下左右捲動 */
+html,
 body {
-  width: 100%;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
   background-color: var(--bg-black);
   color: var(--pure-white);
   /* 全站字體：英數優先 Inter，中文自動銜接 Noto Sans TC */
   font-family: 'Inter', 'Noto Sans TC', sans-serif;
-  overflow-x: hidden;
 }
 
 .quiz-stage {
   display: none;
   position: relative;
-  width: 100%;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .quiz-stage.is-active {
@@ -910,35 +917,37 @@ body[data-stage="question"] .bar-orange {
 }
 
 /* ========================================================================
-   9. STAGE 4: 測驗結算 (承接 4-3 並對應 4-4 GOOD / PASS / FAIL)
+   9. STAGE 4: 測驗結算 (固定收斂於 100vh 單屏內，不可捲動)
    ======================================================================== */
 .stage-result {
-  padding: 15vh 8vw 8vh;
+  padding: 11vh 8vw 4vh;
   background-color: var(--bg-black);
 }
 
 .result-panel {
   width: 100%;
   max-width: 84vw;
+  height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 5vh;
+  gap: 3vh;
 }
 
 .result-hero {
+  flex: 0 0 auto;
   background-color: var(--brand-orange);
   border-radius: var(--board-radius);
-  padding: 5vh 5vw;
+  padding: 3.2vh 4.5vw;
   color: var(--bg-black);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2.6vh;
+  gap: 1.8vh;
 }
 
 .result-score-pill {
-  padding: 0.7vh 1.8vw;
+  padding: 0.55vh 1.6vw;
   border-radius: 999px;
   background-color: var(--bg-black);
   color: var(--brand-orange);
@@ -958,7 +967,7 @@ body[data-stage="question"] .bar-orange {
 }
 
 .result-grade-letters img {
-  height: min(8.15vh, 5.2vw);
+  height: min(6.8vh, 4.6vw);
   width: auto;
   display: block;
 }
@@ -966,7 +975,7 @@ body[data-stage="question"] .bar-orange {
 .result-subhead {
   font-size: var(--font-24);
   font-weight: 500;
-  line-height: 1.6;
+  line-height: 1.5;
   letter-spacing: 0.1em;
 }
 
@@ -974,12 +983,12 @@ body[data-stage="question"] .bar-orange {
   display: flex;
   align-items: center;
   gap: 2vw;
-  margin-top: 1vh;
+  margin-top: 0.4vh;
 }
 
 .result-btn {
   width: 15.57vw; /* 269 / 1728 */
-  height: 5vh;
+  height: 4.6vh;
   border-radius: 999px;
   border: var(--line-weight) solid var(--bg-black);
   font-family: 'Inter', 'Noto Sans TC', sans-serif;
@@ -992,7 +1001,16 @@ body[data-stage="question"] .bar-orange {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.55em; /* icon 與按鈕文字間距 */
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* 結算頁按鈕左側 icon（button-7 重來 / button-6 返回） */
+.result-btn-icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex-shrink: 0;
+  display: block;
 }
 
 .btn-playagain {
@@ -1074,10 +1092,22 @@ body[data-stage="question"] .bar-orange {
 }
 
 .feedback-verdict.is-wrong {
-  /* 答錯：灰底白字，跟下方作答回顧的「答錯」標籤一致 */
-  background-color: var(--text-muted);
-  border-color: var(--text-muted);
-  color: var(--pure-white);
+  /* 答錯：淺灰底 (--hover-gray) 配品牌橘字，與結算回顧的「答錯」標籤一致 */
+  background-color: var(--hover-gray);
+  border-color: var(--hover-gray);
+  color: var(--brand-orange);
+}
+
+/* 答對標籤內的幾何圓圈：以純 CSS 圓環取代過細的字元「○」，粗度對齊粗體文字與 ✕ */
+.verdict-circle {
+  display: inline-block;
+  width: 0.78em;
+  height: 0.78em;
+  margin-right: 0.35em;
+  border: 0.15em solid currentColor;
+  border-radius: 50%;
+  vertical-align: -0.08em;
+  flex-shrink: 0;
 }
 
 .feedback-answer {
@@ -1150,11 +1180,12 @@ body[data-stage="question"] .bar-orange {
   font-weight: 700;
 }
 
+/* 結算回顧答錯標籤：與答題頁一致採用淺灰底 (--hover-gray) 配品牌橘字 */
 .detail-card.is-wrong .dot-tip-title b {
   padding: 0.1vh 0.6vw;
   border-radius: 999px;
-  background-color: var(--text-muted);
-  color: var(--pure-white);
+  background-color: var(--hover-gray);
+  color: var(--brand-orange);
 }
 
 .dot-tip-q {
@@ -1174,51 +1205,6 @@ body[data-stage="question"] .bar-orange {
 @media (prefers-reduced-motion: reduce) {
   .result-dot:hover,
   .result-dot:focus-visible { transform: none; }
-}
-
-/* 選錯的選項卡右上角標一個 ✕ */
-.options-row.is-answered .option-card.is-wrong::after {
-  content: '✕';
-  position: absolute;
-  top: 1.4vh;
-  right: 1.2vw;
-  color: var(--brand-orange);
-  font-size: var(--font-24);
-  font-weight: 700;
-  line-height: 1;
-}
-
-/* 正確答案右上角的勾勾（SVG 線條） */
-.answer-check {
-  position: absolute;
-  top: 1.2vh;
-  right: 1vw;
-  width: 1.9vw;
-  height: 1.9vw;
-  fill: none;
-  stroke: var(--bg-black);
-  stroke-width: 2.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
-
-/* 答對的瞬間：勾勾一筆畫出來 */
-.option-card.draw-check .answer-check {
-  stroke-dashoffset: 1;
-  animation: drawCheck 0.5s cubic-bezier(0.05, 0.7, 0.1, 1) 0.15s forwards;
-}
-
-@keyframes drawCheck {
-  to { stroke-dashoffset: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .option-card.draw-check .answer-check {
-    stroke-dashoffset: 0;
-    animation: none;
-  }
 }
 
 /* ==================== 結算圈圈的解析卡片內容 ==================== */
@@ -1282,10 +1268,15 @@ body[data-stage="question"] .bar-orange {
   color: var(--brand-orange);
 }
 
+/* 結算解析插圖統一鎖定為正方形容器並以 object-fit: contain 等比縮放，避免直長型插頭（如 Type-L）撐高卡片 */
 .tip-tile-img {
   width: 4.2vw;
+  height: 4.2vw;
   min-width: 56px;
-  height: auto;
+  min-height: 56px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
   filter: url(#quiz-orange-tint);
 }
 
@@ -1302,21 +1293,26 @@ body[data-stage="question"] .bar-orange {
   font-size: var(--font-20);
 }
 
-/* ==================== 結算頁：解析卡片（取代原本的作答回顧列表） ==================== */
+/* ==================== 結算頁：解析卡片（固定高度填滿單屏剩餘空間，切換 1–7 題長寬不跳動） ==================== */
 .result-detail {
-  min-height: 30vh;
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
 }
 
 .detail-card {
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 4vw;
-  padding: 4.5vh 4vw;
+  gap: 3.5vw;
+  padding: 2.8vh 3.5vw;
   border: var(--line-weight) solid var(--brand-orange);
   border-radius: var(--board-radius);
   background-color: #111111;
   color: var(--card-gray);
+  overflow: hidden;
   animation: detailIn 0.3s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
@@ -1331,7 +1327,7 @@ body[data-stage="question"] .bar-orange {
 .detail-text {
   display: flex;
   flex-direction: column;
-  gap: 2vh;
+  gap: 1.4vh;
 }
 
 .detail-card .dot-tip-title {
@@ -1341,47 +1337,63 @@ body[data-stage="question"] .bar-orange {
 .detail-card .dot-tip-q {
   font-size: var(--font-24);
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--pure-white);
 }
 
 .detail-card .dot-tip-explain {
   margin: 0;
-  padding-top: 2vh;
+  padding-top: 1.4vh;
   border-top: 1px solid #333333;
   font-size: var(--font-20);
-  line-height: 1.8;
+  line-height: 1.65;
 }
 
 .detail-card .tip-tiles {
   margin: 0;
   gap: 1.2vw;
+  align-items: center;
 }
 
+/* 左右答案卡固定長寬，上方標籤固定位置，內部插圖與文字垂直置中，避免不同題型高低不一 */
 .detail-card .tip-tile {
-  width: 12vw;
-  min-width: 150px;
+  position: relative;
+  width: 11.5vw;
+  min-width: 140px;
+  height: 24vh;
   flex: none;
-  padding: 2.4vh 1.2vw;
+  padding: 4.4vh 1vw 1.8vh;
   border-radius: 1.2vw;
-  gap: 1.6vh;
+  justify-content: center;
+  gap: 1.4vh;
 }
 
 .detail-card .tip-tile-label {
+  position: absolute;
+  top: 1.4vh;
+  left: 1vw;
   font-size: var(--font-16);
 }
 
+/* 鎖定固定正方形比例框，確保直長（Type-L）與橫扁（Type-J）插頭皆與同排選項維持一致縮小比例 */
 .detail-card .tip-tile-img {
-  width: 6.5vw;
-  min-width: 72px;
+  width: min(5.8vw, 9vh);
+  height: min(5.8vw, 9vh);
+  min-width: 0;
+  min-height: 0;
+  object-fit: contain;
 }
 
 .detail-card .tip-tile-name {
   font-size: var(--font-20);
 }
 
+/* 第 4 題題目旁示意插頭同樣鎖定固定正方形比例框 */
 .detail-card .tip-q-img {
-  width: 4.5vw;
+  width: min(4.2vw, 6.5vh);
+  height: min(4.2vw, 6.5vh);
+  min-width: 0;
+  object-fit: contain;
 }
 
 @media (prefers-reduced-motion: reduce) {

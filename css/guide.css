@@ -839,20 +839,20 @@ body[data-view="detail"] .menu-nav-list a[data-nav-view="gallery"] {
   background-color: var(--brand-orange);
 }
 
-/* 左上 TYPE - [X] 標題群組 (left: 122 / 1728 = 7.06vw, top: 175 / 1117 = 15.67vh, width: 573 / 1728 = 33.16vw) */
+/* 左上 TYPE - [X] 標題群組：以 fit-content 緊密貼合上方 TYPE - [A～O] 的實際左右緣，讓下方英／中文精準左右切齊 */
 .detail-section-heading {
   position: absolute;
   left: 7.06vw;
   top: 15.67vh;
-  width: 33.16vw;
+  width: fit-content;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 2.24vh; /* 24–25 / 1117 */
 }
 
 .detail-type-letters {
-  width: 100%;
+  width: auto;
   height: min(8.15vh, 5.27vw); /* 91 / 1117 */
   display: flex;
   align-items: center;
@@ -884,11 +884,13 @@ body[data-view="detail"] .menu-nav-list a[data-nav-view="gallery"] {
   flex-shrink: 0;
 }
 
+/* 副標列：撐滿 TYPE - [A～O] 寬度，英文代號靠左對齊 T、中文敘述靠右對齊型號字母 */
 .detail-subheading {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 2.2vw; /* 1-3-K/F 副標間距 */
+  justify-content: space-between;
+  gap: 1.5vw;
   font-size: var(--font-20);
   font-weight: 300;
   letter-spacing: 0.1em;
@@ -896,10 +898,20 @@ body[data-view="detail"] .menu-nav-list a[data-nav-view="gallery"] {
   white-space: nowrap;
 }
 
-/* 右側雙圓圖示組 (left: 1200 / 1728 = 69.44vw, top: 130 / 1117 = 11.64vh, gap: 90 / 1117 = 8.06vh) */
+.detail-serial {
+  text-align: left;
+}
+
+/* 抵銷最後一字的 letter-spacing (0.1em)，讓中文敘述視覺右緣與上方型號字母完全切齊 */
+.detail-desc {
+  text-align: right;
+  margin-right: -0.1em;
+}
+
+/* 右側雙圓圖示組 (依 Figma 1-3-K 座標 left: 1142 / 1728 = 66.09vw，避開右側 PREV/BACK 切換鈕) */
 .detail-image-group {
   position: absolute;
-  left: 69.44vw;
+  left: 66.09vw;
   top: 11.64vh;
   width: var(--detail-circle-size);
   display: flex;
@@ -964,8 +976,10 @@ body[data-view="detail"] .menu-nav-list a[data-nav-view="gallery"] {
   gap: 2.31vw; /* 40 / 1728 (1-3-F: 39, 1-3-K: 40) */
 }
 
+/* 兩欄資訊卡：保留正下方黑色區域的最小高度，讓滑鼠滑入標題或其正下方即可各自感應展開（不超出單屏避免多餘捲軸） */
 .detail-accordion {
   flex-shrink: 0;
+  min-height: 32vh;
 }
 
 #accordion-specs {
@@ -1146,4 +1160,91 @@ body[data-view="detail"] .menu-nav-list a[data-nav-view="gallery"] {
 
 .detail-back-btn:hover img {
   filter: invert(41%) sepia(93%) saturate(2258%) hue-rotate(4deg) brightness(95%) contrast(94%);
+}
+
+/* 1-3 右側循環切換按鈕組 (對應 Figma 1-3-K button-arrow-prev / button-arrow-back)
+   右側對齊 Menu 右緣 (right: 4.63vw)，兩顆間距 90h (8.06vh)，以橘黑中線 (52.01vh) 垂直置中 */
+.detail-pager-nav {
+  position: absolute;
+  right: var(--nav-pad-x);
+  top: var(--detail-hero-h);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8.06vh; /* 90 / 1117，上下各距中線 45h */
+  z-index: 15;
+}
+
+.detail-pager-btn {
+  width: var(--arrow-btn-size);
+  height: var(--arrow-btn-size);
+  border-radius: 50%;
+  border: var(--line-weight) solid currentColor;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6%;
+  padding: 4% 0 0;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.18s ease;
+}
+
+.detail-pager-btn:hover {
+  transform: scale(1.06);
+}
+
+/* 上方 PREV（橘底黑框黑字黑箭頭） */
+.detail-pager-prev {
+  color: var(--bg-black);
+}
+
+/* 下方 BACK（黑底橘框橘字橘箭頭） */
+.detail-pager-back {
+  color: var(--brand-orange);
+}
+
+/* 點擊時反白：純白底（PREV 維持黑字黑箭頭、BACK 維持橘字橘箭頭） */
+.detail-pager-prev:active,
+.detail-pager-prev.is-pressed {
+  background-color: var(--pure-white);
+  border-color: var(--pure-white);
+  color: var(--bg-black);
+  transform: scale(0.97);
+}
+
+.detail-pager-back:active,
+.detail-pager-back.is-pressed {
+  background-color: var(--pure-white);
+  border-color: var(--pure-white);
+  color: var(--brand-orange);
+  transform: scale(0.97);
+}
+
+/* 純程式繪製直角箭頭（不使用圖片） */
+.detail-pager-chevron {
+  width: 32%;
+  height: 32%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.8;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  display: block;
+}
+
+.detail-pager-label {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: calc(var(--arrow-btn-size) * 0.165);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  padding-left: 0.16em;
+  color: currentColor;
 }

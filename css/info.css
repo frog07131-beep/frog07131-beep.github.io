@@ -1,0 +1,480 @@
+/* =========================================
+1. 浮動比例變數 (對齊全站 Figma 1728 × 1117 基準)
+   ========================================= */
+:root {
+  /* 色彩規範 */
+  --bg-black: #000000;
+  --brand-orange: #E5550D;
+  --pure-white: #FFFFFF;
+
+  /* 導覽列比例 (與 guide.css / travel.css 同步) */
+  --nav-pad-x: 4.63vw;      /* 80 / 1728 */
+  --logo-size: 4.05vw;      /* 70 / 1728 */
+
+  /* 3-1-0 字級比例 (vw) */
+  --font-64: 3.70vw;        /* 64 / 1728 */
+  --font-36: 2.08vw;        /* 36 / 1728 */
+
+  /* 主標題停駐位置：距頂 180h (180 / 1117 = 16.11vh) 與 45h 間距 */
+  --title-stop-top: 16.11vh;
+  --space-45-h: 4.03vh;     /* 45 / 1117 */
+}
+
+/* =========================================
+2. 全域重置與可捲動畫布
+   ========================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scrollbar-gutter: stable;
+  background-color: var(--bg-black);
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-black);
+  color: var(--brand-orange);
+  /* 全站字體：英數優先 Inter，中文自動銜接 Noto Sans TC */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  overflow-x: clip; /* 使用 clip 避免破壞內部 position: sticky 黏滯效果 */
+}
+
+/* =========================================
+3. 固定頂部導覽列 (Logo + Menu 固定於最上層，捲動時永不被覆蓋)
+   ========================================= */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 var(--nav-pad-x);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.nav-logo,
+.nav-menu-btn {
+  pointer-events: auto;
+}
+
+.nav-logo {
+  display: block;
+  margin-top: 3.58vh; /* 40 / 1117 */
+  width: var(--logo-size);
+  height: var(--logo-size);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  transform: scale(1.06);
+  opacity: 0.9;
+}
+
+.nav-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.nav-menu-btn {
+  margin-top: 3.67vh; /* 41 / 1117 */
+  width: 5.79vw;      /* 100 / 1728 */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.34vh;        /* 15 / 1117 */
+  padding: 0;
+}
+
+.menu-bar {
+  display: block;
+  height: 1.07vh;     /* 12 / 1117 */
+  border-radius: 0.174vw;
+  transition: transform 0.2s ease, width 0.2s ease;
+}
+
+.bar-orange {
+  width: 100%;
+  background-color: var(--brand-orange);
+}
+
+.bar-white {
+  width: 50%;
+  background-color: var(--pure-white);
+}
+
+.nav-menu-btn:hover .bar-white {
+  width: 75%;
+}
+
+/* =========================================
+4. 側邊選單抽屜 (與全站其他頁面同步，層級高於導覽列與主視覺)
+   ========================================= */
+.menu-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.menu-drawer.open {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.menu-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.72);
+}
+
+.menu-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(420px, 85vw);
+  height: 100%;
+  background-color: var(--bg-black);
+  border-left: 3px solid var(--brand-orange);
+  padding: 48px 36px;
+  overflow-x: hidden;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-drawer.open .menu-drawer-panel {
+  transform: translateX(0);
+}
+
+.menu-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  color: var(--brand-orange);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.menu-nav-list {
+  list-style: none;
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 選單選項預設（收合）狀態：向左偏移並隱藏 */
+.menu-nav-list li {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.08s ease, transform 0.08s ease;
+  transition-delay: 0s;
+}
+
+/* 選單開啟狀態：由左至右逐項進場 */
+.menu-drawer.open .menu-nav-list li {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.3s ease,
+    transform 0.325s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-drawer.open .menu-nav-list li:nth-child(1) { transition-delay: 0.075s; }
+.menu-drawer.open .menu-nav-list li:nth-child(2) { transition-delay: 0.225s; }
+.menu-drawer.open .menu-nav-list li:nth-child(3) { transition-delay: 0.375s; }
+.menu-drawer.open .menu-nav-list li:nth-child(4) { transition-delay: 0.525s; }
+.menu-drawer.open .menu-nav-list li:nth-child(5) { transition-delay: 0.675s; }
+
+.menu-nav-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  color: var(--pure-white);
+  text-decoration: none;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid var(--brand-orange);
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.menu-nav-list a:hover {
+  color: var(--brand-orange);
+  padding-left: 8px;
+}
+
+/* 目前所在頁面（資訊與文章）：選單文字顯示品牌橘色 */
+.menu-nav-list a.is-current {
+  color: var(--brand-orange);
+}
+
+.menu-nav-arrow {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.18s ease;
+}
+
+.menu-nav-list a:hover .menu-nav-arrow {
+  transform: translateX(4px);
+}
+
+/* =========================================
+5. 3-1-0 ～ 3-1-0-3 開場捲動軌道與 Sticky 舞台
+   ========================================= */
+.info-main {
+  width: 100%;
+}
+
+/* 捲動軌道總高 330vh（可捲動行程 230vh）：
+   0~35vh 主標題由中央上移至 180h；
+   35~55vh 主標題停駐緩衝（再滑約 2 下）；
+   55~90vh 小知識；90~125vh 資訊；125~160vh 更多；160~180vh ...（約 2 下）；
+   180~230vh ... 散開至 320% 並於下方 45h 浮現引言 */
+.info-story-track {
+  position: relative;
+  width: 100%;
+  height: 330vh;
+  background-color: var(--bg-black);
+}
+
+/* Sticky 舞台固定佔滿單屏寬高，層級低於固定導覽列 (z-index: 120) */
+.info-story-stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* =========================================
+6. 主標題「你所不知道關於插頭的...」(初始 36 級、字距 40%，上移至 180h 過程等比縮小至 20 級，逐字鋼琴彈跳)
+   ========================================= */
+.info-main-title {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 20;
+  display: inline-flex;
+  align-items: baseline;
+  transform-origin: center top; /* 以頂部水平中點為縮放原點，確保縮小至 20 級時頂緣精準停在 180h */
+  /* 預設（JS 初始化前）垂直水平置中；捲動後由 JS 以 translate3d + scale 平滑移至 180h (16.11vh) */
+  transform: translate3d(-50%, calc(50vh - 50%), 0) scale(1);
+  font-size: var(--font-36);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0; /* 改由單字 .title-char 左右各 0.2em 組成等距 40% 字距，方便逐字無縫滑過 */
+  color: var(--brand-orange);
+  white-space: nowrap;
+  text-align: center;
+  will-change: transform;
+  user-select: none;
+}
+
+/* 單一字元鋼琴鍵互動：各自獨立感應滑鼠移入並向上回彈 */
+.title-char {
+  display: inline-block;
+  padding: 0.15em 0.2em; /* 相鄰兩字合計 0.4em = 40% 字距，同時消除滑鼠橫掃時的空隙斷點 */
+  transform: translateY(0);
+  will-change: transform;
+  transition: transform 0.24s cubic-bezier(0.22, 1.45, 0.36, 1);
+}
+
+.title-char:hover {
+  transform: translateY(-0.45em);
+}
+
+/* =========================================
+7. 四段關鍵字舞台 (64 級、字距 60%，左進 ease-out、右出 ease-in)
+   ========================================= */
+.info-keyword-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* 關鍵字基礎與「移出」狀態：皆大於 0.5 秒並強化 ease-in 加速離場（向下向右移出、向上退回左側）
+   四周向外擴大 90h (8.06vh) 作為滑鼠感應區 */
+.info-keyword {
+  position: absolute;
+  top: 50vh;
+  left: 50%;
+  padding: 8.06vh; /* 90 / 1117：觸發區域向外各增加 90h */
+  font-size: var(--font-64);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.6em;
+  color: var(--brand-orange);
+  white-space: nowrap;
+  text-align: center;
+  will-change: transform, opacity;
+  user-select: none;
+  transition:
+    transform 0.68s cubic-bezier(0.76, 0, 0.92, 0.2), /* 明顯 ease-in：慢起步、尾段加速滑出 */
+    opacity 0.58s cubic-bezier(0.76, 0, 0.92, 0.2);
+}
+
+/* 尚未登場：待命於畫面左側之外 */
+.info-keyword.is-before {
+  transform: translate3d(calc(-50% - 62vw), -50%, 0);
+  opacity: 0;
+}
+
+/* 當前登場：停駐於畫面正中央，大於 0.5 秒並強化 ease-out 減速煞停（向下由左移入、向上由右移回），滑鼠移入即可放大 */
+.info-keyword.is-active {
+  transform: translate3d(-50%, -50%, 0);
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+  transition:
+    transform 0.85s cubic-bezier(0.08, 0.96, 0.18, 1), /* 明顯 ease-out：快速進場、柔和減速定格 */
+    opacity 0.65s cubic-bezier(0.08, 0.96, 0.18, 1);
+}
+
+/* 內層文字獨立負責滑鼠移入放大（與外層水平進出場動畫分離，並補償尾字 letter-spacing 保持視覺置中） */
+.info-keyword-inner {
+  display: inline-block;
+  padding-left: 0.6em; /* 補償尾字 letter-spacing，維持於 90h 感應區正中央 */
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 首次自動放大與自動縮回期間：縮放時間放慢一倍（0.35s → 0.7s），不影響手動 hover 速度 */
+.info-keyword.is-auto-zoom-slow .info-keyword-inner {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 滑鼠移到當前關鍵字（或鍵盤聚焦、首次登場自動提示 .is-auto-zoom）立即平滑放大至 1.5 倍（散開態不放大以免超寬） */
+.info-keyword.is-active:not(.is-spread):hover .info-keyword-inner,
+.info-keyword.is-active:not(.is-spread):focus-visible .info-keyword-inner,
+.info-keyword.is-active:not(.is-spread).is-auto-zoom .info-keyword-inner {
+  transform: scale(1.5);
+}
+
+/* 「...」改以三顆獨立 .dot-char 搭配純 GPU translate3d 展開，避免動畫 letter-spacing / top 造成重影 */
+.info-keyword-dots .dots-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+  padding-left: 0;
+}
+
+.dot-char {
+  display: inline-block;
+  will-change: transform;
+  transition: transform 0.85s cubic-bezier(0.08, 0.96, 0.18, 1);
+}
+
+/* 收合預設：維持 60% (0.6em) 字距 */
+.dot-left {
+  transform: translate3d(-0.6em, 0, 0);
+}
+
+.dot-mid {
+  transform: translate3d(0, 0, 0);
+}
+
+.dot-right {
+  transform: translate3d(0.6em, 0, 0);
+}
+
+/* 展開態：外框以純 transform 上移 14vh（50vh → 36vh），左右兩點平滑散開至 320% (3.2em)，中間點鎖定正中 */
+.info-keyword-dots.is-active.is-spread {
+  transform: translate3d(-50%, calc(-50% - 14vh), 0);
+  cursor: default;
+}
+
+.info-keyword-dots.is-spread .dot-left {
+  transform: translate3d(-3.2em, 0, 0);
+}
+
+.info-keyword-dots.is-spread .dot-right {
+  transform: translate3d(3.2em, 0, 0);
+}
+
+/* =========================================
+8. 點點散開後下方間隔 45h 之引言文字 (36 級、字距 20%、置中)
+   ========================================= */
+.info-intro-copy {
+  position: absolute;
+  /* 精準對位：散開後點點中心 36vh + 64 級半行高 (0.625 × 3.70vw) + 下方間隔 45h (4.03vh) */
+  top: calc(36vh + 0.625 * var(--font-64) + var(--space-45-h));
+  left: 50%;
+  transform: translate3d(-50%, 2.4vh, 0);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+  font-size: var(--font-36);
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0.2em; /* 20% 字距 */
+  padding-left: 0.2em;   /* 補償尾字字距維持視覺正中 */
+  color: var(--brand-orange);
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  will-change: transform, opacity;
+  /* 向上捲回時以 ease-in 淡出收合 */
+  transition:
+    opacity 0.55s cubic-bezier(0.76, 0, 0.92, 0.2),
+    transform 0.6s cubic-bezier(0.76, 0, 0.92, 0.2);
+}
+
+.info-intro-copy.is-visible {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0);
+  pointer-events: auto;
+  /* 隨點點散開以 ease-out 平滑浮現 */
+  transition:
+    opacity 0.8s cubic-bezier(0.08, 0.96, 0.18, 1) 0.15s,
+    transform 0.85s cubic-bezier(0.08, 0.96, 0.18, 1) 0.15s;
+}
+
+/* 已離場：滑出至畫面右側之外（最後的「...」不會套用此狀態） */
+.info-keyword.is-after {
+  transform: translate3d(calc(-50% + 62vw), -50%, 0);
+  opacity: 0;
+}
+
+/* =========================================
+9. 無障礙：尊重使用者「減少動態效果」偏好
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+  .menu-drawer,
+  .menu-drawer-panel,
+  .menu-nav-list li,
+  .title-char,
+  .info-keyword,
+  .info-keyword.is-active,
+  .info-keyword-inner,
+  .dot-char,
+  .info-intro-copy,
+  .info-intro-copy.is-visible {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}

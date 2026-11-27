@@ -3,10 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PLUG IN - 首頁</title>
-    <link rel="icon" href="./img/button-logo.svg">
+  <title>PLUG IN - 資訊與文章</title>
+  <link rel="icon" href="./img/button-logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/home.css">
+  <link rel="stylesheet" href="./css/info.css">
 </head>
+<body>
+
+  <!-- ==================== 固定頂部導覽列 (Logo 與 Menu 恆駐最上層不被覆蓋) ==================== -->
+  <header class="top-nav">
+    <a href="./index.html" class="nav-logo" id="nav-logo" aria-label="返回 PLUG IN 首頁">
+      <img src="./img/button-logo.svg" alt="PLUG IN Logo">
+    </a>
+
+    <button type="button" id="menu-btn" class="nav-menu-btn" aria-label="開啟選單" aria-expanded="false">
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-orange"></span>
+      <span class="menu-bar bar-white"></span>
+    </button>
+  </header>
+
+  <!-- ==================== 側邊選單遮罩 (與全站 5 項統一) ==================== -->
+  <aside class="menu-drawer" id="menu-drawer" aria-hidden="true">
+    <div class="menu-drawer-backdrop" id="menu-backdrop"></div>
+    <nav class="menu-drawer-panel" aria-label="網站選單">
+      <button type="button" class="menu-close-btn" id="menu-close-btn" aria-label="關閉選單">✕</button>
+      <ul class="menu-nav-list">
+        <li>
+          <a href="./guide.html?view=map">
+            <span>插頭世界地圖</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./guide.html?view=gallery&spec=all&page=1">
+            <span>插頭圖鑑</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./travel.html">
+            <span>旅行查詢器</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./info.html" class="is-current" aria-current="page">
+            <span>資訊與文章</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+        <li>
+          <a href="./quiz.html">
+            <span>用電安全隨堂考</span>
+            <img src="./img/arrow-menu.svg" alt="" class="menu-nav-arrow" aria-hidden="true">
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ========================================================================
+       3-1-0 ～ 3-1-0-3 資訊與文章開場捲動舞台
+       向下捲動：主標題由畫面正中上移至 180h 停駐，再往下滑約 2 下後依序由左移入「小知識 → 資訊 → 更多 → ...」
+       向上捲動：完全反向操作
+       ======================================================================== -->
+  <main class="info-main">
+    <section class="info-story-track" id="info-story-track" aria-label="資訊與文章開場導覽">
+      <div class="info-story-stage" id="info-story-stage">
+        <!-- 主標題：36 級、字距 40%，初始置中，往下滑動至距頂 180h 停住 -->
+        <h1 class="info-main-title" id="info-main-title">你所不知道關於插頭的...</h1>
+
+        <!-- 四段關鍵字舞台：64 級、字距 60%，由左 ease-out 移入、向右 ease-in 移出（... 停駐不移出，再往下捲 2 下散開至 320%） -->
+        <div class="info-keyword-stage" aria-live="polite">
+          <p class="info-keyword is-before" data-stage="0" tabindex="0"><span class="info-keyword-inner">小知識</span></p>
+          <p class="info-keyword is-before" data-stage="1" tabindex="0"><span class="info-keyword-inner">資訊</span></p>
+          <p class="info-keyword is-before" data-stage="2" tabindex="0"><span class="info-keyword-inner">更多</span></p>
+          <p class="info-keyword info-keyword-dots is-before" id="info-keyword-dots" data-stage="3" tabindex="0" aria-label="..."><span class="info-keyword-inner dots-group" aria-hidden="true"><span class="dot-char dot-left">.</span><span class="dot-char dot-mid">.</span><span class="dot-char dot-right">.</span></span></p>
+        </div>
+
+        <!-- 點點散開後於其下方間隔 45h 顯示之引言（36 級、字距 20%、置中） -->
+        <p class="info-intro-copy" id="info-intro-copy" aria-hidden="true">
+          插頭圍繞每天都在我們的<br>
+          生活當中，但我們除了<br>
+          日常的插拔之外對其<br>
+          並沒有更深入<br>
+          了解
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/info.js"></script>
+</body>
+</html>

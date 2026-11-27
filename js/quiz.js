@@ -199,10 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let revealTimer = null; // 保留給 renderQuestion / hideAnswerResult 清除用
 
-  const CHECK_SVG = '<svg class="answer-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 7" pathLength="1"/></svg>';
-
-  // animate = true：剛作答且答對時，正確選項右上角的勾勾會一筆畫出來
-  function showAnswerResult(index, animate = false) {
+  // 顯示作答結果（選項卡不再標記右上角圈圈／叉叉，僅透過卡面高亮與下方回饋列顯示對錯）
+  function showAnswerResult(index) {
     const q = QUESTIONS[index];
     const chosenKey = state.answers[index];
     const isCorrect = chosenKey === q.correct;
@@ -213,16 +211,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const key = btn.dataset.optionKey;
       const isAnswer = key === q.correct;
       btn.classList.toggle('is-selected', isAnswer);
-      if (isAnswer && !btn.querySelector('.answer-check')) {
-        btn.insertAdjacentHTML('beforeend', CHECK_SVG);
-      }
-      btn.classList.toggle('draw-check', isAnswer && animate && isCorrect);
       btn.classList.toggle('is-wrong', key === chosenKey && !isCorrect);
       btn.setAttribute('aria-checked', String(key === chosenKey));
       btn.setAttribute('aria-disabled', 'true');
     });
 
-    feedbackVerdict.textContent = isCorrect ? '✓ 答對' : '✕ 答錯';
+    // 答對顯示粗圓環「○ 答對」（CSS 幾何圓圈以對齊粗體字重）、答錯顯示「✕ 答錯」
+    feedbackVerdict.innerHTML = isCorrect
+      ? '<span class="verdict-circle" aria-hidden="true"></span>答對'
+      : '✕ 答錯';
     feedbackVerdict.classList.toggle('is-wrong', !isCorrect);
     feedbackAnswer.textContent = `正確答案　${optionLabel(q, q.correct)}`;
     feedbackExplain.textContent = q.explanation;
@@ -385,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <div class="detail-card ${isCorrect ? 'is-correct' : 'is-wrong'}">
           <div class="detail-text">
-            <div class="dot-tip-title">第 ${q.id} 題　<b>${isCorrect ? '✓ 答對' : '✕ 答錯'}</b></div>
+            <div class="dot-tip-title">第 ${q.id} 題　<b>${isCorrect ? '<span class="verdict-circle" aria-hidden="true"></span>答對' : '✕ 答錯'}</b></div>
             <div class="dot-tip-q">${questionImg}<span>${q.question}</span></div>
             <p class="dot-tip-explain">${q.explanation}</p>
           </div>

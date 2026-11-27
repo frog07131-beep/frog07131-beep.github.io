@@ -13,14 +13,12 @@
   /* 框線粗度 (3 / 1728 = 0.1736vw) */
   --line-weight: 0.174vw;
 
-  /* 頂部與查詢區塊比例 */
+  /* 頂部與查詢區塊比例 (標題移至頂部導覽列後，查詢區總高收斂為 180h，上下各留 45h) */
   --nav-pad-x: 4.63vw;        /* 80 / 1728 */
   --logo-size: 4.05vw;        /* 70 / 1728 */
   --search-top: 15.67vh;      /* 175 / 1117 */
-  --search-h: 24.26vh;        /* 271 / 1117 */
-  --search-title-h: 12.09vh;  /* 135 / 1117 */
+  --search-h: 16.11vh;        /* 180 / 1117 (45h + 90h + 45h，對齊 travel.css 單排高度) */
   --search-bar-h: 8.06vh;     /* 90 / 1117 */
-  --search-bar-bot: 4.12vh;   /* 46 / 1117 */
 
   /* 查詢結果卡片比例 */
   --results-top: 8.06vh;      /* 536 - (175 + 271) = 90 -> 90 / 1117 */
@@ -79,12 +77,29 @@ body {
   justify-content: space-between;
 }
 
+/* 左側 Logo 與「旅行查詢器」主標題（完全對齊 travel.css，跨頁切換不跳動） */
+.nav-left {
+  margin-top: 3.49vh; /* 39 / 1117，與右側 Menu 中心線齊平 */
+  display: flex;
+  align-items: center;
+  gap: 1.74vw;        /* 30 / 1728：讓標題左緣維持於 10.42vw (80 + 70 + 30) */
+}
+
 .nav-logo {
   display: block;
-  margin-top: 3.49vh; /* 39 / 1117 */
   width: var(--logo-size);
   height: var(--logo-size);
+  flex-shrink: 0;
   transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.main-title {
+  font-size: var(--font-36);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.6em;
+  color: var(--brand-orange);
+  white-space: nowrap;
 }
 
 .nav-logo:hover {
@@ -134,7 +149,7 @@ body {
 }
 
 /* =========================================
-4. 查詢器區塊 (588:1445)
+4. 查詢器區塊 (標題移至頂部後，查詢列上移並於 180h 區內垂直置中)
    ========================================= */
 .search-section {
   width: 100%;
@@ -144,25 +159,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center; /* 垂直置中 90h 查詢列，上下各留 45h */
   position: relative;
   z-index: 30;
-}
-
-.search-title-row {
-  width: 100%;
-  height: var(--search-title-h);
-  display: flex;
-  align-items: center;
-  padding-left: 12.38vw; /* 214 / 1728 */
-}
-
-.search-section-title {
-  font-size: var(--font-36);
-  font-weight: 500;
-  line-height: 1.44;
-  letter-spacing: 0.6em;
-  color: var(--brand-orange);
 }
 
 .search-bar-row {

@@ -269,6 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const detailAppearance = document.getElementById('detail-appearance');
   const detailSafety = document.getElementById('detail-safety');
   const detailBackBtn = document.getElementById('detail-back-btn');
+  const detailPrevBtn = document.getElementById('detail-prev-btn');
+  const detailBackPlugBtn = document.getElementById('detail-back-plug-btn');
 
   const accordionSpecs = document.getElementById('accordion-specs');
   const accordionSafety = document.getElementById('accordion-safety');
@@ -661,6 +663,20 @@ document.addEventListener('DOMContentLoaded', () => {
     setAccordionState(accordionSafety, toggleSafetyBtn, dropdownSafety, false, '安全指引與補充');
   }
 
+  // 滑鼠滑入「技術規格」或「安全指引與補充」欄位（含標題與正下方黑區）時各自自動展開；
+  // 收合僅透過點擊右上角 ✕ 觸發，且因使用 mouseenter，點擊關閉當下不會立即重複彈開
+  accordionSpecs.addEventListener('mouseenter', () => {
+    if (!accordionSpecs.classList.contains('is-open')) {
+      setAccordionState(accordionSpecs, toggleSpecsBtn, dropdownSpecs, true, '技術規格');
+    }
+  });
+
+  accordionSafety.addEventListener('mouseenter', () => {
+    if (!accordionSafety.classList.contains('is-open')) {
+      setAccordionState(accordionSafety, toggleSafetyBtn, dropdownSafety, true, '安全指引與補充');
+    }
+  });
+
   toggleSpecsBtn.addEventListener('click', () => {
     const nextOpen = !accordionSpecs.classList.contains('is-open');
     setAccordionState(accordionSpecs, toggleSpecsBtn, dropdownSpecs, nextOpen, '技術規格');
@@ -674,6 +690,35 @@ document.addEventListener('DOMContentLoaded', () => {
   detailBackBtn.addEventListener('click', () => {
     switchView('gallery', { spec: state.spec, page: state.page });
   });
+
+  // 1-3 右側 PREV / BACK 循環切換（A–O 頭尾相連：O 按 PREV 跳回 A，A 按 BACK 跳回 O）
+  function flashPagerButton(btnEl) {
+    if (!btnEl) return;
+    if (btnEl._pressTimer) {
+      clearTimeout(btnEl._pressTimer);
+    }
+    btnEl.classList.add('is-pressed');
+    btnEl._pressTimer = setTimeout(() => {
+      btnEl.classList.remove('is-pressed');
+      btnEl._pressTimer = null;
+    }, 180);
+  }
+
+  function stepDetailPlug(delta, btnEl) {
+    const order = SPEC_GROUPS.all; // ['A' .. 'O']
+    const currentIdx = Math.max(0, order.indexOf(state.plugType));
+    const nextType = order[(currentIdx + delta + order.length) % order.length];
+    flashPagerButton(btnEl);
+    switchView('detail', { type: nextType });
+  }
+
+  if (detailPrevBtn) {
+    detailPrevBtn.addEventListener('click', () => stepDetailPlug(1, detailPrevBtn));
+  }
+
+  if (detailBackPlugBtn) {
+    detailBackPlugBtn.addEventListener('click', () => stepDetailPlug(-1, detailBackPlugBtn));
+  }
 
   // =========================================
   // 8. 頂部導覽與側邊選單互動
